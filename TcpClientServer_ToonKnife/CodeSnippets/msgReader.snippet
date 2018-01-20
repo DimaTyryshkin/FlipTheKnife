@@ -22,9 +22,10 @@
 					<Default>ScsHalloMessage</Default>
 				</Literal>
 			</Declarations> 
-      <Code Language="csharp"><![CDATA[void $name$MsgReader(IScsServerClient client, IScsMessage msg)
+      <Code Language="csharp"><![CDATA[void $name$MsgReader(ReceivedMsg msg)
         {
-            var m = ($msgType$)msg;
+            var m = ($msgType$)msg.Msg;
+			IScsServerClient clietn = (IScsServerClient)msg.Sender;
             $selected$ $end$ 
         }]]>
   
