@@ -54,14 +54,21 @@
       <Project>{0dc81b09-3abf-4bb3-8c08-4e8ee4432bdc}</Project>
       <Name>Scs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ScsServiceInfrastructure\ScsServiceInfrastructure.csproj">
-      <Project>{5A2546E5-59C0-4879-9F8D-71E0F927C9DB}</Project>
-      <Name>ScsServiceInfrastructure</Name>
+    <ProjectReference Include="..\ScsService\Common\ScsService.Common.csproj">
+      <Project>{5a2546e5-59c0-4879-9f8d-71e0f927c9db}</Project>
+      <Name>ScsService.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ScsService\Server\ScsService.Server.csproj">
+      <Project>{c2bac628-3f83-4a7f-90b0-83709b8c79e4}</Project>
+      <Name>ScsService.Server</Name>
     </ProjectReference>
     <ProjectReference Include="..\ToonKnifeServerClientCommon\ToonKnifeServerClientCommon.csproj">
       <Project>{6bc71155-0319-4e67-a72f-48756baacff7}</Project>
       <Name>ToonKnifeServerClientCommon</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Authentication\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

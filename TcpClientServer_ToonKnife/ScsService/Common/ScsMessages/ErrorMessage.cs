@@ -1,7 +1,7 @@
 ﻿using Hik.Communication.Scs.Communication.Messages;
 using System; 
 
-namespace ToonKnife.Common.ScsMessages
+namespace ScsService.Common.ScsMessages
 {
     [Serializable]
     public class ErrorMessage : ScsMessage
