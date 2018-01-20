@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToonKnifeServer", "ToonKnifeServer\ToonKnifeServer.csproj", "{DAF65F37-FBDE-4D09-84F9-95B4EB48A52E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToonKnifeServerClientCommon", "ToonKnifeServerClientCommon\ToonKnifeServerClientCommon.csproj", "{6BC71155-0319-4E67-A72F-48756BAACFF7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A2546E5-59C0-4879-9F8D-71E0F927C9DB} = {5A2546E5-59C0-4879-9F8D-71E0F927C9DB}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scs", "..\scs-master net3_5\src\Scs\Scs.csproj", "{0DC81B09-3ABF-4BB3-8C08-4E8EE4432BDC}"
 EndProject
