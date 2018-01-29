@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{82179748-225A-40DE-B7E4-3A5B70AA276C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClientServerGameLogicCommon</RootNamespace>
+    <AssemblyName>ClientServerGameLogicCommon</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Game.cs" />
+    <Compile Include="Knife.cs" />
+    <Compile Include="KnifePhysicsModel\KnifePhysicsModel.cs" />
+    <Compile Include="knife\KnifeDef.cs" />
+    <Compile Include="knife\KnifeMode.cs" />
+    <Compile Include="knife\KnifeRarity.cs" />
+    <Compile Include="knife\KnifeUtils.cs" />
+    <Compile Include="knife\KnivesRepoDef.cs" />
+    <Compile Include="MathUtils.cs" />
+    <Compile Include="price\PriceDef.cs" />
+    <Compile Include="price\PriceType.cs" />
+    <Compile Include="price\PriceUtils.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DataAsses\DataAsses.csproj">
+      <Project>{e8c7a12e-2f5c-4d58-9f25-f6e4a626d76b}</Project>
+      <Name>DataAsses</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Loger\Loger.csproj">
+      <Project>{7dad1f70-b508-4514-ad97-5aacea79edbf}</Project>
+      <Name>Loger</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="bin\Debug\" />
+    <Folder Include="bin\Release\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>$(ToonKnifeDir) = "E:\ToonKnife\Assets\plugins\ClientServerCommon\"
+
+xcopy /Y "$(TargetDir)*.*" "$(ToonKnifeDir)"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,23 @@
+Throw force=310.7499 deltaX=0
+frame timeAfterThrow=1.2
+pos=(1.6, -3.2)
+rot=65.68801
+frame timeAfterThrow=1.26
+pos=(1.7, -3.0)
+rot=74.85602
+frame timeAfterThrow=1.32
+pos=(1.8, -2.9)
+rot=83.97002
+frame timeAfterThrow=1.38
+pos=(1.8, -2.7)
+rot=93.03003
+frame timeAfterThrow=1.439999
+pos=(1.7, -2.6)
+rot=102.036
+frame timeAfterThrow=1.499999
+pos=(1.7, -2.6)
+rot=110.988
+frame timeAfterThrow=1.559999
+pos=(1.5, -2.6)
+rot=119.886
+throwFail timeAfterThrow=1.559999 m_rotation=128.0069 delta=96.00694
