@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToonKnifeServer", "ToonKnifeServer\ToonKnifeServer.csproj", "{DAF65F37-FBDE-4D09-84F9-95B4EB48A52E}"
 EndProject
@@ -18,7 +18,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScsService.Common", "ScsSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScsService.Server", "ScsService\Server\ScsService.Server.csproj", "{C2BAC628-3F83-4A7F-90B0-83709B8C79E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToonKnifePhysics", "ToonKnifePhysics\ToonKnifePhysics.csproj", "{EFE2B116-A28A-40B8-B4E9-45A96DDC7491}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClietnServerGameCommon", "ClietnServerGameCommon", "{539C12CF-6F4B-499A-8279-474B78922271}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loger", "..\ClientServerCommon\Loger\Loger.csproj", "{7DAD1F70-B508-4514-AD97-5AACEA79EDBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAsses", "..\ClientServerCommon\DataAsses\DataAsses.csproj", "{E8C7A12E-2F5C-4D58-9F25-F6E4A626D76B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientServerGameLogicCommon", "..\ClientServerCommon\ClientServerGameLogicCommon\ClientServerGameLogicCommon.csproj", "{82179748-225A-40DE-B7E4-3A5B70AA276C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,10 +52,18 @@ Global
 		{C2BAC628-3F83-4A7F-90B0-83709B8C79E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2BAC628-3F83-4A7F-90B0-83709B8C79E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2BAC628-3F83-4A7F-90B0-83709B8C79E4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EFE2B116-A28A-40B8-B4E9-45A96DDC7491}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EFE2B116-A28A-40B8-B4E9-45A96DDC7491}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EFE2B116-A28A-40B8-B4E9-45A96DDC7491}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EFE2B116-A28A-40B8-B4E9-45A96DDC7491}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DAD1F70-B508-4514-AD97-5AACEA79EDBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DAD1F70-B508-4514-AD97-5AACEA79EDBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DAD1F70-B508-4514-AD97-5AACEA79EDBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DAD1F70-B508-4514-AD97-5AACEA79EDBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8C7A12E-2F5C-4D58-9F25-F6E4A626D76B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8C7A12E-2F5C-4D58-9F25-F6E4A626D76B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8C7A12E-2F5C-4D58-9F25-F6E4A626D76B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8C7A12E-2F5C-4D58-9F25-F6E4A626D76B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82179748-225A-40DE-B7E4-3A5B70AA276C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82179748-225A-40DE-B7E4-3A5B70AA276C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82179748-225A-40DE-B7E4-3A5B70AA276C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82179748-225A-40DE-B7E4-3A5B70AA276C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,5 +71,11 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5A2546E5-59C0-4879-9F8D-71E0F927C9DB} = {D30DBDE2-1A62-4248-A799-6BCA16B6C4E0}
 		{C2BAC628-3F83-4A7F-90B0-83709B8C79E4} = {D30DBDE2-1A62-4248-A799-6BCA16B6C4E0}
+		{7DAD1F70-B508-4514-AD97-5AACEA79EDBF} = {539C12CF-6F4B-499A-8279-474B78922271}
+		{E8C7A12E-2F5C-4D58-9F25-F6E4A626D76B} = {539C12CF-6F4B-499A-8279-474B78922271}
+		{82179748-225A-40DE-B7E4-3A5B70AA276C} = {539C12CF-6F4B-499A-8279-474B78922271}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49AC221E-EB96-45EB-927D-067D198B5C01}
 	EndGlobalSection
 EndGlobal

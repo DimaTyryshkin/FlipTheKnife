@@ -32,6 +32,11 @@ namespace Assets.game.logic.playground.common
         public KnifePhysicsModel knifePhysics;
         KnifePhysicsModel.KnifeTrajectory knifeTrajectory;
 
+        public KnifePhysicsModel.KnifeTrajectory KnifeTrajectory
+        {
+            get { return knifeTrajectory; }
+        }
+
 
         public enum State
         {
@@ -60,6 +65,15 @@ namespace Assets.game.logic.playground.common
             get { return m_rotation; }
         }
            
+        /// <summary>
+        /// 
+        /// </summary>
+        public float lastCollisionPoint
+        {
+            get { return 0; }
+        }
+
+
         public event Action<State> stateChanged;
           
         public event Action onReset;
@@ -98,6 +112,11 @@ namespace Assets.game.logic.playground.common
                 }
 
                 moved(frame);
+
+                if (m_timeAfterThrow >= knifeTrajectory.lastFrame.timeAfterThrow)
+                {
+                    Collide();
+                }
             }
 
 #if PHYSICS_DEBUG
