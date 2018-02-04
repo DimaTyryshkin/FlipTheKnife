@@ -1,14 +1,9 @@
 ﻿using Hik.Communication.Scs.Communication.Messages;
-using Hik.Communication.Scs.Communication.Messengers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
+using Hik.Communication.Scs.Communication.Messengers; 
 
 namespace ScsService.Common
 {
-    public struct ReceivedMsg
+    public class ReceivedMsg
     {
         /// <summary>
         /// Кто прислал

@@ -12,6 +12,8 @@ namespace ScsService.Common
     /// </summary>
     public interface IConcurrentMsgQueue
     {
+        int Count { get; }
+
         /// <summary>
         /// Начать прием сообщений от клиента или сервера
         /// </summary>
@@ -20,8 +22,7 @@ namespace ScsService.Common
 
 
         void RemoveMessenger(IMessenger messenger);
-
-
-        ReceivedMsg[] ToArray();
+        
+        void ReadStoredMsg(int count);
     }
 }

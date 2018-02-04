@@ -104,8 +104,7 @@ namespace Assets.game.logic.playground.common
 
                 if (state == State.Flying)
                 {
-                    //TODO передалть через проверку высоты
-                    if (knifeTrajectory.Velocity(m_timeAfterThrow) <= 0)
+                    if (frame.speed <= 0)
                     {
                         Fall();
                     }
@@ -147,8 +146,8 @@ namespace Assets.game.logic.playground.common
             if (state != State.Freeze)
                 return;
              
-            knifePhysics = new KnifePhysicsModel(def);
-            knifeTrajectory = knifePhysics.Throw(force, m_rotation);
+            knifePhysics = new KnifePhysicsModel();
+            knifeTrajectory = knifePhysics.Throw(def, force, m_rotation);
 
             SetState(State.Flying);
 
@@ -231,13 +230,14 @@ namespace Assets.game.logic.playground.common
             {
                 Free();
 
-                float deltaLeft = Math.Abs(minAngleLeft - def.successDeflectionLeft);
-                float deltaRight = Math.Abs(minAngleRight - def.successDeflectionRight);
-                float delta = Math.Min(deltaLeft, deltaRight);
+                //float deltaLeft = Math.Abs(minAngleLeft - def.successDeflectionLeft);
+                //float deltaRight = Math.Abs(minAngleRight - def.successDeflectionRight);
+                //float delta = Math.Min(deltaLeft, deltaRight);
 
                 if (throwFail != null)
                 {
-                    throwFail(delta);
+                    float rotationSpeed = knifeTrajectory.InterpolateFrame(m_timeAfterThrow).rotationSpeed;
+                    throwFail(rotationSpeed);
                 }
             }
         }

@@ -39,7 +39,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReadScsMessageDelegate.cs" />
     <Compile Include="ScsMessages\GameErrorMessage.cs" />
     <Compile Include="ScsMessages\ScsHalloMessage.cs" />
   </ItemGroup>

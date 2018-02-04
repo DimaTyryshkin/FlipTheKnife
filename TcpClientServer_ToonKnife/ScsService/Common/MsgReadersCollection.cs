@@ -10,19 +10,19 @@ namespace ScsService.Common
 {
     public class MsgReadersCollection
     {
-        Dictionary<Type, ReadMsgDelegate> _msgReaders;
+        Dictionary<Type, Delegate> _msgReaders;
 
 
 
 
         public MsgReadersCollection()
         {
-            _msgReaders = new Dictionary<Type, ReadMsgDelegate>();
+            _msgReaders = new Dictionary<Type, Delegate>();
         }
 
-        public void RegisterMsgReader(Type msgType, ReadMsgDelegate reader)
+        public void RegisterMsgReader<TMesage>(ReadMsgDelegate<TMesage> reader)
         {
-            _msgReaders.Add(msgType, reader);
+            _msgReaders.Add(typeof(TMesage), reader);
         }
 
         /// <summary>
@@ -32,16 +32,22 @@ namespace ScsService.Common
         {
             var reader = _msgReaders[msg.Msg.GetType()];
 
-            reader.Invoke(msg);
+            reader.DynamicInvoke(msg, msg.Msg);
         }
+
+
 
         /// <summary>
         /// Для непосредственной подписки у клиента\сервера. Будет рабоатть асинхронно.
         /// </summary>
         /// <param name="sender"><see cref="IMessenger"/></param> 
-        public void AsyncClient_MessageReceivedHendler(object sender, MessageEventArgs e)
+        public void CallReader(object sender, MessageEventArgs e)
         {
             ReceivedMsg msg = new ReceivedMsg((IMessenger)sender, e.Message);
+
+            //var type= typeof(List<>).MakeGenericType(e.Message.GetType());
+            //Activator.cre
+
             CallReader(msg);
         }
     }

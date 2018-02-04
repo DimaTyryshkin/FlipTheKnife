@@ -3,5 +3,5 @@ using Hik.Communication.Scs.Server;
 
 namespace ScsService.Common
 {
-    public delegate void ReadMsgDelegate(ReceivedMsg receivedMsg);
+    public delegate void ReadMsgDelegate<TScsMessage>(ReceivedMsg receivedMsg, TScsMessage msg);
 }

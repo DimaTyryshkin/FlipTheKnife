@@ -1,25 +1,30 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-using Hik.Communication.Scs.Server;
-using Hik.Communication.Scs.Communication.Messages;
+using Hik.Communication.Scs.Server; 
 using Hik.Communication.Scs.Communication.EndPoints.Tcp;
 
 using ScsService.Server.Authentication;
 using ScsService.Common.ScsMessages;
+using ScsService.Common.Authentication;
+using ScsService.Common;
 
 namespace ScsService.Server
 {
     public class ScsService
     {
-        int _scsClientMaxCount = 8192; //16384;
+        int _scsClientMaxCount; // 8192; //16384;
         int _scsClientCount;
-         
+
         IScsServer _server;
-        ConcurrentQueue<ReceivedClientEvent> _eventQueue;
-        LinkedList<UserAuthenticationState> _authenticationStates;
+        ConcurrentMsgQueue _msgQueueForAutentification;
+        ConcurrentMsgQueue _msgQueue;
+        Dictionary<IScsServerClient, UserAuthenticationState> _authenticationStates;
         Dictionary<IScsServerClient, User> _authenticatedUsers;
+        MsgReadersCollection _msgReaders;
+        MsgReadersCollection _msgReadersForAutentification;
 
         //---events
 
@@ -33,29 +38,47 @@ namespace ScsService.Server
         /// </summary>
         public event EventHandler<UserEventArgs> OnUserLogin;
 
+        //--- prop
+        public MsgReadersCollection MsgReaders
+        {
+            get { return _msgReadersForAutentification; }
+        }
 
 
         //---methods
 
-        public ScsService(int tcpPort, int scsClientMaxCount= 8192)
+        public ScsService(int tcpPort, int scsClientMaxCount = 8192)
         {
-            this._scsClientMaxCount = scsClientMaxCount;
+            _scsClientMaxCount = scsClientMaxCount;
 
             // Список по сути особен ну нужен, но используется 
             // чтобы отделять клиентов, котоыре еще не прошли регистраци от тех кто уже прошел,
             // чтобы не пропускать не нужные событи вверх к основному приложению.
             _authenticatedUsers = new Dictionary<IScsServerClient, User>();
 
-            //Синхронная очередь клиентских событий 
-            _eventQueue = new ConcurrentQueue<ReceivedClientEvent>();
+            //Синхронная очередь клиентских msg для тех кто еще не прошел аутентификацию
+            _msgReadersForAutentification = new MsgReadersCollection();
+            _msgReadersForAutentification.RegisterMsgReader<AuthenticationMessage>(AuthenticationMsgReader);
+            _msgQueueForAutentification = new ConcurrentMsgQueue(_msgReadersForAutentification);
+            _msgQueueForAutentification.ClientEventReaded += MsgQueue_ClientEventReaded;
+
+            //Синхронная очередь клиентских msg
+            _msgReaders = new MsgReadersCollection();
+            _msgQueue = new ConcurrentMsgQueue(_msgReaders);
+            _msgQueue.ClientEventReaded += MsgQueue_ClientEventReaded;
 
             // Проходящите подключение клиенты
-            _authenticationStates = new LinkedList<UserAuthenticationState>();
+            _authenticationStates = new Dictionary<IScsServerClient, UserAuthenticationState>();
 
             // Scs server(tcp слой)
             _server = ScsServerFactory.CreateServer(new ScsTcpEndPoint(tcpPort));
             _server.ClientConnected += Server_ClientConnected;
             _server.ClientDisconnected += Server_ClientDisconnected;
+        }
+
+
+        public void Start()
+        {
             _server.Start();
         }
 
@@ -63,53 +86,20 @@ namespace ScsService.Server
         {
             //---В главном потоке спокойно читаем события подклюбчения\отключения
 
-            foreach (var reseivedEvent in _eventQueue.ToArray())
+            _msgQueueForAutentification.ReadStoredMsg();
+            //_msgQueue.ReadStoredMsg(_msgQueue.Count);
+
+
+            //TODO оптимизировать без копирования в каждом кадре
+            // Тут отключаем тех кто затянул с аутентийикацией
+            var authenticationStates = _authenticationStates.Values.ToArray();
+            foreach (UserAuthenticationState userAuth in authenticationStates)
             {
-                // Disconnect
-                if (reseivedEvent.EventType == ReceivedClientEvent.Event.Disconnected)
-                {
-                    var client = reseivedEvent.Client;
-                    if (_authenticatedUsers.ContainsKey(client))
-                    {
-                        var disconectedUser = _authenticatedUsers[client];
-                        _authenticatedUsers.Remove(client);
-
-                        //Бросаем событие уже после удаления из спаска. Все равно ему уже ничего не послать.
-                        OnUserDisconnected(this, new UserEventArgs(disconectedUser));
-                    }
-                }
-
-                // Connect
-                if (reseivedEvent.EventType == ReceivedClientEvent.Event.Connected)
-                {
-                    _scsClientCount++;
-                    _authenticationStates.AddLast(new UserAuthenticationState(reseivedEvent.Client));
-                }
-            }
-
-            LinkedListNode<UserAuthenticationState> stateNode = _authenticationStates.First;
-            while (stateNode != null)
-            {
-                UserAuthenticationState userAuth = stateNode.Value;
-                if (userAuth.State == UserAuthenticationState.AuthenticationState.Success)
-                {
-                    ////TODO тут типа из бызы надо грузить 
-                    //ToonKnifeUser newUser = new ToonKnifeUser();
-                    //users.Add(userAuth.ScsClient, newUser);
-
-                    _authenticatedUsers.Add(userAuth.ScsClient, userAuth.User);
-                    OnUserLogin(this, new UserEventArgs(userAuth.User));
-
-                    stateNode = stateNode.Next;
-                }
-                else if (userAuth.State == UserAuthenticationState.AuthenticationState.Fail)
+                if (userAuth.State == UserAuthenticationState.AuthenticationState.Fail)
                 {
                     // Удаляем этого клиента и его аутентификатор
-                    var nodeToRemove = stateNode;
-                    stateNode = nodeToRemove.Next;
-
-                    nodeToRemove.Value.Stop();
-                    _authenticationStates.Remove(nodeToRemove);
+                    userAuth.Stop();
+                    _authenticationStates.Remove(userAuth.ScsClient);
                 }
             }
         }
@@ -123,14 +113,18 @@ namespace ScsService.Server
 
         void Server_ClientConnected(object sender, ServerClientEventArgs e)
         {
-            Console.WriteLine("A new client is connected. Client Id = " + e.Client.ClientId);
+            Console.WriteLine(GetType().Name + " :New tcp client Id = " + e.Client.ClientId);
 
             if (_scsClientCount < _scsClientMaxCount)
             {
-                _eventQueue.Enqueue(new ReceivedClientEvent(e.Client, ReceivedClientEvent.Event.Connected));
+                _msgQueueForAutentification.EnqueueEvent(new ClientEvent(e.Client, ClientEvent.Event.Connected));
+
+                //Прямо сраз уначинаем слушать! иначе можно терять сообщения
+                _msgQueueForAutentification.AddMessenger(e.Client);
             }
             else
             {
+                //TODO клиент не сможет ничего принять, он не успеет создать очередь сообщений
                 e.Client.SendMessage(
                     new ErrorMessage(ErrorMessage.Error.ToManyClientOnServer, null, null));
 
@@ -140,7 +134,70 @@ namespace ScsService.Server
 
         void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
         {
-            _eventQueue.Enqueue(new ReceivedClientEvent(e.Client, ReceivedClientEvent.Event.Disconnected));
+            Console.WriteLine(GetType().Name + " :A client is Disconnected. Client Id = " + e.Client.ClientId);
+
+            _msgQueueForAutentification.EnqueueEvent(new ClientEvent(e.Client, ClientEvent.Event.Disconnected));
+        }
+
+        private void MsgQueue_ClientEventReaded(object sender, ClientEvent e)
+        {
+            if (e.EventType == ClientEvent.Event.Connected)
+            {
+                Console.WriteLine(GetType().Name + " :Start authentication Id = " + e.Client.ClientId);
+                _scsClientCount++;
+                _authenticationStates.Add(e.Client, new UserAuthenticationState(e.Client));
+            }
+
+
+            // Disconnect
+            if (e.EventType == ClientEvent.Event.Disconnected)
+            {
+                var client = e.Client;
+                if (_authenticatedUsers.ContainsKey(client))
+                {
+                    var disconectedUser = _authenticatedUsers[client];
+
+
+                    //_msgQueue.RemoveMessenger(e.Client);
+
+                    //Бросаем событие уже после удаления из спаска. Все равно ему уже ничего не послать.
+                    OnUserDisconnected?.Invoke(this, new UserEventArgs(disconectedUser));
+                }
+
+                _authenticatedUsers.Remove(client);
+                _msgQueueForAutentification.RemoveMessenger(e.Client);
+            }
+        }
+
+        //---msg readers
+
+        private void AuthenticationMsgReader(ReceivedMsg receivedMsg, AuthenticationMessage msg)
+        {
+            UserAuthenticationState autState;
+            if (_authenticationStates.TryGetValue((IScsServerClient)receivedMsg.Sender, out autState))
+            {
+                autState.Step1_MsgReader(receivedMsg, msg);
+
+                if (autState.State == UserAuthenticationState.AuthenticationState.Success)
+                {
+                    // Удаляем аутентификатор 
+                    _authenticationStates.Remove(autState.ScsClient);
+
+                    //Сначала добавляем потом удаляем, чтобы не бьыло ни наносекунды, когда никто не слушает клиента
+                    //_msgQueue.AddMessenger(autState.ScsClient);
+                    //_msgQueueForAutentification.RemoveMessenger(autState.ScsClient);
+
+                    _authenticatedUsers.Add(autState.ScsClient, autState.User);
+                    autState.ScsClient.SendMessage(new AuthenticationSuccesMessage());
+
+
+                    OnUserLogin?.Invoke(this, new UserEventArgs(autState.User));
+                }
+            }
+            else
+            {
+                Console.WriteLine(GetType().Name +" :AuthenticationMsgReader error login="+ msg.login);   
+            }
         }
     }
 }

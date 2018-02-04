@@ -17,7 +17,6 @@ namespace ScsService.Server.Authentication
         TimeSpan _authenticationTimeOut = TimeSpan.FromSeconds(30);
         DateTime _authenticationMaxTime;
         User _user;
-        MsgReadersCollection _rpcList;
         AuthenticationState _state = AuthenticationState.Processing;
 
         //---prop
@@ -26,8 +25,11 @@ namespace ScsService.Server.Authentication
         {
             get
             {
-                if (DateTime.Now > _authenticationMaxTime)
-                    _state = AuthenticationState.Fail;
+                if (_state == AuthenticationState.Processing)
+                {
+                    if (DateTime.Now > _authenticationMaxTime)
+                        _state = AuthenticationState.Fail;
+                }
 
                 return _state;
             }
@@ -63,49 +65,42 @@ namespace ScsService.Server.Authentication
         }
 
         //--methods
-        
+
         public UserAuthenticationState(IScsServerClient client)
         {
             _authenticationMaxTime = DateTime.Now + _authenticationTimeOut;
 
             ScsClient = client;
 
-            _rpcList = new MsgReadersCollection();
-            _rpcList.RegisterMsgReader(typeof(AuthenticationMessage), Stem1_MsgReader);
-
-            client.MessageReceived += _rpcList.AsyncClient_MessageReceivedHendler;
             client.Disconnected += Client_Disconnected;
+        }
+
+        public void Step1_MsgReader(ReceivedMsg receivedMsg, AuthenticationMessage authenticationMessage)
+        {
+            if (receivedMsg.Sender == ScsClient)
+            {
+                Console.WriteLine(GetType().Name + " :Get AuthenticationMessage " + authenticationMessage.login);
+                if (State == AuthenticationState.Processing)
+                {
+                    User = new User(authenticationMessage.login, ScsClient);
+                    State = AuthenticationState.Success;
+
+                    //Console.WriteLine("Authentication Success login=" + authenticationMessage.login);
+                }
+
+                Stop();
+            }
         }
 
         public void Stop()
         {
-            ScsClient.MessageReceived -= _rpcList.AsyncClient_MessageReceivedHendler;
             ScsClient.Disconnected -= Client_Disconnected;
         }
-         
-        private void Client_Disconnected(object sender, EventArgs e)
+
+        void Client_Disconnected(object sender, EventArgs e)
         {
             Stop();
             State = AuthenticationState.Fail;
-        }
-
-        void Stem1_MsgReader(ReceivedMsg msg)
-        {
-            if (State == AuthenticationState.Processing)
-            {
-                var m = (AuthenticationMessage)msg.Msg;
-                IScsServerClient clietn = (IScsServerClient)msg.Sender;
-
-                User = new User(m.login, clietn);
-                State = AuthenticationState.Success;
-
-                if (State == AuthenticationState.Success)
-                {
-                    //TODO send to clietn
-                }
-            }
-
-            Stop();
         }
     }
 }

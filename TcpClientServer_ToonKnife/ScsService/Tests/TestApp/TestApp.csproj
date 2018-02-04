@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{82179748-225A-40DE-B7E4-3A5B70AA276C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClientServerGameLogicCommon</RootNamespace>
-    <AssemblyName>ClientServerGameLogicCommon</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ProjectGuid>{23DC10A0-67F0-4B10-A335-18E9A15B9C1B}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TestApp</RootNamespace>
+    <AssemblyName>TestApp</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -20,16 +21,17 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -40,36 +42,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Game.cs" />
-    <Compile Include="Knife.cs" />
-    <Compile Include="KnifePhysicsModel\KnifePhysicsModel.cs" />
-    <Compile Include="knife\KnifeDef.cs" />
-    <Compile Include="knife\KnifeMode.cs" />
-    <Compile Include="knife\KnifeRarity.cs" />
-    <Compile Include="knife\KnifeUtils.cs" />
-    <Compile Include="knife\KnivesRepoDef.cs" />
-    <Compile Include="MathUtils.cs" />
-    <Compile Include="price\PriceDef.cs" />
-    <Compile Include="price\PriceType.cs" />
-    <Compile Include="price\PriceUtils.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataAsses\DataAsses.csproj">
-      <Project>{e8c7a12e-2f5c-4d58-9f25-f6e4a626d76b}</Project>
-      <Name>DataAsses</Name>
+    <ProjectReference Include="..\..\..\..\scs-master net3_5\src\Scs\Scs.csproj">
+      <Project>{0dc81b09-3abf-4bb3-8c08-4e8ee4432bdc}</Project>
+      <Name>Scs</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Loger\Loger.csproj">
-      <Project>{7dad1f70-b508-4514-ad97-5aacea79edbf}</Project>
-      <Name>Loger</Name>
+    <ProjectReference Include="..\..\Common\ScsService.Common.csproj">
+      <Project>{5a2546e5-59c0-4879-9f8d-71e0f927c9db}</Project>
+      <Name>ScsService.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ScsService.Client\ScsService.Client.csproj">
+      <Project>{3ff31737-aa75-4ef3-9e8f-f05c07ddd8bc}</Project>
+      <Name>ScsService.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Server\ScsService.Server.csproj">
+      <Project>{c2bac628-3f83-4a7f-90b0-83709b8c79e4}</Project>
+      <Name>ScsService.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ConnectionIntegrationTest\ConnectionIntegrationTest.csproj">
+      <Project>{9151f5bb-1fde-435b-a916-028d791134f3}</Project>
+      <Name>ConnectionIntegrationTest</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="bin\Debug\" />
-    <Folder Include="bin\Release\" />
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(TargetDir)*.*"  "E:\ToonKnife\Assets\plugins\ClientServerCommon\"</PostBuildEvent>
-  </PropertyGroup>
 </Project>

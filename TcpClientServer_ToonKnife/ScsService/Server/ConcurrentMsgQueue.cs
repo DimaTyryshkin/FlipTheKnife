@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Linq;
+﻿using System; 
+using System.Collections.Concurrent; 
 
 using ScsService.Common;
 using Hik.Communication.Scs.Communication.Messengers;
@@ -13,15 +11,31 @@ namespace ScsService.Server
     /// Сообщения асинхронно приходящие от мессенджеров(клиенты или серверы) класс складывает в очередь
     /// и позволяет их потом получить из главного игрового цикла
     /// </summary>
-    public class ConcurrentMsgQueue : IConcurrentMsgQueue
+    internal class ConcurrentMsgQueue : IConcurrentMsgQueue
     {
-        ConcurrentQueue<ReceivedMsg> _msgQueue;
-
-
-        
-        public ConcurrentMsgQueue()
+        struct Entry
         {
-            _msgQueue = new ConcurrentQueue<ReceivedMsg>();
+            public ReceivedMsg msg;
+            public ClientEvent clientEvent;
+        }
+
+        ConcurrentQueue<Entry> _entryQueue;
+        MsgReadersCollection _msgReaders;
+
+        //---events
+        public event EventHandler<ClientEvent> ClientEventReaded;
+
+        //---prop
+
+        public int Count => _entryQueue.Count;
+
+
+
+        //---methods
+        public ConcurrentMsgQueue(MsgReadersCollection msgReaders)
+        {
+            _msgReaders = msgReaders;
+            _entryQueue = new ConcurrentQueue<Entry>();
         }
 
         /// <summary>
@@ -33,20 +47,60 @@ namespace ScsService.Server
             messenger.MessageReceived += Messenger_MessageReceived;
         }
 
-        public ReceivedMsg[] ToArray()
-        {
-            return _msgQueue.ToArray();
-        }
-
         public void RemoveMessenger(IMessenger messenger)
         {
             messenger.MessageReceived -= Messenger_MessageReceived;
         }
 
-        private void Messenger_MessageReceived(object sender, MessageEventArgs e)
+        public void EnqueueEvent(ClientEvent clientEvent)
+        {
+            Entry entry = new Entry()
+            {
+                clientEvent = clientEvent
+            };
+
+            _entryQueue.Enqueue(entry);
+            Console.WriteLine(GetType().Name + " :Enqueue Event " + clientEvent.EventType);
+        }
+
+        public void ReadStoredMsg(int maxCount = 50)
+        {
+            Entry entry;
+            int count = Math.Min(maxCount, _entryQueue.Count);
+            int countOriginal = count;
+
+            int n = 1;
+            while (count > 0 && _entryQueue.TryDequeue(out entry))
+            {
+                count--;
+
+                Console.WriteLine(GetType().Name + " :entry " + n + "/" + countOriginal + " curCount=" + _entryQueue.Count);
+                if (entry.msg != null)
+                {
+                    Console.WriteLine(GetType().Name + " :Read Msg " + entry.msg.Msg.GetType().Name);
+                    _msgReaders.CallReader(entry.msg);
+                }
+                else
+                {
+                    Console.WriteLine(GetType().Name + " :Read Event");
+                    ClientEventReaded.Invoke(this, entry.clientEvent);
+                }
+
+                n++;
+            }
+        }
+
+        void Messenger_MessageReceived(object sender, MessageEventArgs e)
         {
             ReceivedMsg msg = new ReceivedMsg((IMessenger)sender, e.Message);
-            _msgQueue.Enqueue(msg);
+             
+            Entry entry = new Entry()
+            {
+                msg = msg,
+            };
+
+            _entryQueue.Enqueue(entry);
+            Console.WriteLine(GetType().Name + " :Enqueue Mgg " + e.Message.GetType().Name);
         }
     }
 }

@@ -27,6 +27,7 @@ namespace Assets.game.model.knife
         public float perfectDeflectionRight;
         public string prefab;
         public float scale;
+        public float size;
         public int sides;
 
         public PriceDef price;
@@ -84,6 +85,7 @@ namespace Assets.game.model.knife
             prefab = config.GetString("prefab");
             scale = config.GetFloat("scale");
             sides = config.GetInt("sides", 1);
+            size= config.GetFloat("size");
 
             price = config.CheckKey("price") ? new PriceDef(config.GetNode("price")) : PriceDef.NewNone();
 

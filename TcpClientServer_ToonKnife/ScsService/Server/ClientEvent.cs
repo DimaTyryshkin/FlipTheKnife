@@ -1,15 +1,9 @@
-﻿using Hik.Communication.Scs.Communication.Messages;
-using Hik.Communication.Scs.Communication.Messengers;
-using Hik.Communication.Scs.Server;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
+﻿using Hik.Communication.Scs.Server;
+
 
 namespace ScsService.Server
 {
-    public struct ReceivedClientEvent
+    public class ClientEvent
     {
         public enum Event
         {
@@ -21,10 +15,11 @@ namespace ScsService.Server
         /// Кто прислал
         /// </summary>
         public IScsServerClient Client { get; private set; }
-
+         
+         
         public Event EventType { get; private set; }
 
-        public ReceivedClientEvent(IScsServerClient sender, Event eventType)
+        public ClientEvent(IScsServerClient sender, Event eventType)
         {
             Client = sender;
             EventType = eventType;

@@ -43,10 +43,9 @@
     <Compile Include="Authentication\UserEventArgs.cs" />
     <Compile Include="Authentication\UserAuthenticationState.cs" />
     <Compile Include="Authentication\User.cs" />
-    <Compile Include="ConcurrentEventQueue.cs" />
+    <Compile Include="ClientEvent.cs" />
     <Compile Include="ConcurrentMsgQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReceivedClientEvent.cs" />
     <Compile Include="ScsService.cs" />
   </ItemGroup>
   <ItemGroup>

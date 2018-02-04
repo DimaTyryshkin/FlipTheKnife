@@ -48,6 +48,7 @@ namespace Hik.Communication.Scs.Communication.Channels.Tcp
             StartSocket();
             _running = true;
             _thread = new Thread(DoListenAsThread);
+            _thread.IsBackground = true;
             _thread.Start();
         }
 

@@ -38,6 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authentication\AuthenticationSuccesMessage.cs" />
     <Compile Include="Authentication\AuthenticationMessage.cs" />
     <Compile Include="ScsMessages\ErrorMessage.cs" />
     <Compile Include="IConcurrentMsgQueue.cs" />

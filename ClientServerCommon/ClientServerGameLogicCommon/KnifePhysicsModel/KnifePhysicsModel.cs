@@ -1,7 +1,7 @@
 ﻿using System; 
 using System.Collections.Generic; 
 using Assets.game.model.knife;
-
+using CodeWriter.Logging;
 
 namespace Assets.game.logic.playground.common 
 {
@@ -10,14 +10,17 @@ namespace Assets.game.logic.playground.common
         public class KnifeTrajectory
         {
             int lastLeftFrame;
+            ILog log;
 
             public List<Frame> frames;
 
             public Frame lastFrame { get { return frames[frames.Count - 1]; } }
 
 
+
             public KnifeTrajectory(List<Frame> frames)
             {
+                log = LogManager.GetLogger(typeof(KnifeTrajectory));
                 this.frames = frames;
             }
 
@@ -32,10 +35,7 @@ namespace Assets.game.logic.playground.common
                     return frames[0];
 
                 int leftIndex = FindLeftFrame(time);
-
-
-                // может быть ошибка, но это значит все совсем сломалось
-
+                
                 Frame left = frames[leftIndex];
                 Frame right = frames[leftIndex + 1];
 
@@ -43,31 +43,7 @@ namespace Assets.game.logic.playground.common
 
                 return Frame.LerpUnclamped(left, right, t);
             }
-
-            public float Velocity(float time)
-            {
-                //крайние положения
-
-                if (time > frames[frames.Count - 1].timeAfterThrow)
-                    return 0;
-
-                if (time < frames[0].timeAfterThrow)
-                    return 0;
-
-                int leftIndex = FindLeftFrame(time);
-
-                // может быть ошибка, но это значит все совсем сломалось
-
-                Frame left = frames[leftIndex];
-                Frame right = frames[leftIndex + 1];
-
-                float deltaY = right.senterOfMassY - left.senterOfMassY;
-                float deltaTime = right.timeAfterThrow - left.timeAfterThrow;
-                float velocity = deltaY / deltaTime;//Ааа! дак вот зачем я ходил в школу! V=S/T
-
-                return velocity;
-            }
-
+            
             int FindLeftFrame(float time)
             {
                 // сначала ищем начиная с того места где в последжний раз нашли.(скорее всего следующиу - нужный нам)
@@ -88,7 +64,7 @@ namespace Assets.game.logic.playground.common
 
             int FindLeftFrame(int start, float time)
             {
-                for (int n = start; n < frames.Count - 1; n++)
+                for (int n = start; n < frames.Count; n++)
                 {
                     if (frames[n].timeAfterThrow > time)
                         return Math.Max(n - 1, 0);
@@ -108,6 +84,8 @@ namespace Assets.game.logic.playground.common
                 r.timeAfterThrow = LerpUnclamped(a.timeAfterThrow, b.timeAfterThrow, t);
                 r.senterOfMassY = LerpUnclamped(a.senterOfMassY, b.senterOfMassY, t);
                 r.angle = LerpUnclamped(a.angle, b.angle, t);
+                r.rotationSpeed = LerpUnclamped(a.rotationSpeed, b.rotationSpeed, t);
+                r.speed = LerpUnclamped(a.speed, b.speed, t);
                 r.bladeX = LerpUnclamped(a.bladeX, b.bladeX, t);
                 r.bladeY = LerpUnclamped(a.bladeY, b.bladeY, t);
                 r.handleX = LerpUnclamped(a.handleX, b.handleX, t);
@@ -126,6 +104,8 @@ namespace Assets.game.logic.playground.common
             public float timeAfterThrow;
             public float senterOfMassY;
             public float angle;
+            public float rotationSpeed;
+            public float speed;
 
             public float bladeX;
             public float bladeY;
@@ -184,25 +164,21 @@ namespace Assets.game.logic.playground.common
             }
         }
 
-        public KnifePhysicsModel(KnifeDef knifeDef)
-        {
-            if (knifeDef.gravity > 0) throw new ArgumentException("knifeDef.gravity > 0");
-
-            //timeStep = testOptions.timeStep;
-            //knifeMass = testOptions.knifeMass;
-            //knifeLength = testOptions.knifeLength;
-
+        public KnifePhysicsModel( )
+        { 
             timeStep = 0.01f;
-            knifeMass = 1f;
-            knifeLength = 3.6f;
-
-            this.knifeDef = knifeDef;
+            knifeMass = 1f; 
         }
 
 
-        public KnifeTrajectory Throw(float impulse, float startAngle)
+        public KnifeTrajectory Throw(KnifeDef knifeDef, float impulse, float startAngle)
         {
+            if (knifeDef.gravity > 0) throw new ArgumentException("knifeDef.gravity > 0");
             if (impulse <= 0) throw new ArgumentOutOfRangeException("impulse <= 0");
+
+            this.knifeDef = knifeDef;
+
+            knifeLength = knifeDef.size;
 
             impulse *= Knife.PIXELS_TO_UNITS;
             impulse *= 1f;//testOptions.impulseMultipler;
@@ -215,7 +191,7 @@ namespace Assets.game.logic.playground.common
             float oldY = -10000;
             bool flight = true;
 
-            float speed = impulse / knifeMass;
+            float startSpeed = impulse / knifeMass;
             startY = (knifeLength / 2f) * Cos(startAngle);
 
             float rorationSpeed = AngleToRad(knifeDef.rotationSpeed);
@@ -235,9 +211,8 @@ namespace Assets.game.logic.playground.common
                 time += timeStep;
 
                 oldY = y;
-                //y = startY + speed * time + (testOptions.gravityMultipler * Knife.PIXELS_TO_UNITS * knifeDef.gravity) * (float)Math.Pow(time, 2) * 0.5f;
-                y = startY + speed * time + (Knife.PIXELS_TO_UNITS * knifeDef.gravity) * (float)Math.Pow(time, 2) * 0.5f;
-
+                y = startY + startSpeed * time + (Knife.PIXELS_TO_UNITS * knifeDef.gravity) * (float)Math.Pow(time, 2) * 0.5f;
+                float speed = (y - oldY) / timeStep;
 
                 // Поворот
                 rorationSpeed -= AngleToRad(knifeDef.rotationDecrease) * timeStep;
@@ -252,6 +227,8 @@ namespace Assets.game.logic.playground.common
                     angle = RadToAngle(angle),//обратно в углы переводим
                     senterOfMassY = y,
                     timeAfterThrow = time,
+                    rotationSpeed = RadToAngle(rorationSpeed),
+                    speed = speed
                 };
 
 
