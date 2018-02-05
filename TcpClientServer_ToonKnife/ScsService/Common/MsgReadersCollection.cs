@@ -1,20 +1,14 @@
 ﻿using Hik.Communication.Scs.Communication.Messages;
-using Hik.Communication.Scs.Communication.Messengers;
-using Hik.Communication.Scs.Server;
+using Hik.Communication.Scs.Communication.Messengers; 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.Generic; 
 
 namespace ScsService.Common
 {
     public class MsgReadersCollection
     {
         Dictionary<Type, Delegate> _msgReaders;
-
-
-
-
+         
         public MsgReadersCollection()
         {
             _msgReaders = new Dictionary<Type, Delegate>();
@@ -25,14 +19,28 @@ namespace ScsService.Common
             _msgReaders.Add(typeof(TMesage), reader);
         }
 
+        public void RemoveMsgReader<TMesage>()
+        {
+            _msgReaders.Remove(typeof(TMesage));
+        }
+
         /// <summary>
         /// Среди зарегистророванных методов находит подходящий по типу сообщения и вызывает его.
         /// </summary> 
-        public void CallReader(ReceivedMsg msg)
+        public bool CallReader(ReceivedMsg msg)
         {
-            var reader = _msgReaders[msg.Msg.GetType()];
+            Delegate reader;
 
-            reader.DynamicInvoke(msg, msg.Msg);
+            if (_msgReaders.TryGetValue(msg.Msg.GetType(), out reader))
+            {
+                reader.DynamicInvoke(msg, msg.Msg);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 

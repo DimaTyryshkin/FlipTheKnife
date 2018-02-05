@@ -9,7 +9,7 @@ namespace ScsService.Common
         /// Кто прислал
         /// </summary>
         public IMessenger Sender { get; private set; }
-
+        
         /// <summary>
         /// Полученное сообщение
         /// </summary>

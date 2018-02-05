@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="Authentication\UserEventArgs.cs" />
     <Compile Include="Authentication\UserAuthenticationState.cs" />
-    <Compile Include="Authentication\User.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="ClientEvent.cs" />
     <Compile Include="ConcurrentMsgQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -50,6 +50,7 @@ namespace Assets.game.logic.playground.common
         public int score
         {
             get { return m_score; }
+            set { m_score = value; }
         }
 
         public KnifeDef knifeDef

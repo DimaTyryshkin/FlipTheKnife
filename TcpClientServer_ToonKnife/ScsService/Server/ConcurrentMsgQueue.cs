@@ -4,6 +4,8 @@ using System.Collections.Concurrent;
 using ScsService.Common;
 using Hik.Communication.Scs.Communication.Messengers;
 using Hik.Communication.Scs.Communication.Messages;
+using System.Collections.Generic;
+using Hik.Communication.Scs.Server;
 
 namespace ScsService.Server
 {
@@ -21,6 +23,7 @@ namespace ScsService.Server
 
         ConcurrentQueue<Entry> _entryQueue;
         MsgReadersCollection _msgReaders;
+        Dictionary<IScsServerClient, User> _authenticatedUsers;
 
         //---events
         public event EventHandler<ClientEvent> ClientEventReaded;
@@ -32,8 +35,9 @@ namespace ScsService.Server
 
 
         //---methods
-        public ConcurrentMsgQueue(MsgReadersCollection msgReaders)
+        public ConcurrentMsgQueue(MsgReadersCollection msgReaders, Dictionary<IScsServerClient, User> authenticatedUsers)
         {
+            _authenticatedUsers = authenticatedUsers;
             _msgReaders = msgReaders;
             _entryQueue = new ConcurrentQueue<Entry>();
         }
@@ -78,6 +82,16 @@ namespace ScsService.Server
                 if (entry.msg != null)
                 {
                     Console.WriteLine(GetType().Name + " :Read Msg " + entry.msg.Msg.GetType().Name);
+                    User user;
+                    if (_authenticatedUsers.TryGetValue((IScsServerClient)entry.msg.Sender, out user))
+                    { 
+                        if (user.MsgReaders.CallReader(entry.msg))
+                        {
+                            continue;
+                        }
+                    }
+                     
+                    //TODO проверять что есть метод
                     _msgReaders.CallReader(entry.msg);
                 }
                 else

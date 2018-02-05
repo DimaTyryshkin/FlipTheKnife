@@ -59,12 +59,12 @@ namespace ScsService.Server
             //Синхронная очередь клиентских msg для тех кто еще не прошел аутентификацию
             _msgReadersForAutentification = new MsgReadersCollection();
             _msgReadersForAutentification.RegisterMsgReader<AuthenticationMessage>(AuthenticationMsgReader);
-            _msgQueueForAutentification = new ConcurrentMsgQueue(_msgReadersForAutentification);
+            _msgQueueForAutentification = new ConcurrentMsgQueue(_msgReadersForAutentification, _authenticatedUsers);
             _msgQueueForAutentification.ClientEventReaded += MsgQueue_ClientEventReaded;
 
             //Синхронная очередь клиентских msg
             _msgReaders = new MsgReadersCollection();
-            _msgQueue = new ConcurrentMsgQueue(_msgReaders);
+            _msgQueue = new ConcurrentMsgQueue(_msgReaders, _authenticatedUsers);
             _msgQueue.ClientEventReaded += MsgQueue_ClientEventReaded;
 
             // Проходящите подключение клиенты
@@ -153,15 +153,15 @@ namespace ScsService.Server
             if (e.EventType == ClientEvent.Event.Disconnected)
             {
                 var client = e.Client;
-                if (_authenticatedUsers.ContainsKey(client))
+                User disconectedUser;
+                if (_authenticatedUsers.TryGetValue(client, out disconectedUser))
                 {
-                    var disconectedUser = _authenticatedUsers[client];
-
-
                     //_msgQueue.RemoveMessenger(e.Client);
 
+                    //TODO оставить только один способ проброса события
                     //Бросаем событие уже после удаления из спаска. Все равно ему уже ничего не послать.
                     OnUserDisconnected?.Invoke(this, new UserEventArgs(disconectedUser));
+                    disconectedUser.OnDisconnected();
                 }
 
                 _authenticatedUsers.Remove(client);

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToonKnifeServer", "ToonKnifeServer\ToonKnifeServer.csproj", "{DAF65F37-FBDE-4D09-84F9-95B4EB48A52E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToonKnife.Server", "ToonKnifeServer\ToonKnife.Server.csproj", "{DAF65F37-FBDE-4D09-84F9-95B4EB48A52E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToonKnifeServerClientCommon", "ToonKnifeServerClientCommon\ToonKnifeServerClientCommon.csproj", "{6BC71155-0319-4E67-A72F-48756BAACFF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToonKnife.Common", "ToonKnifeServerClientCommon\ToonKnife.Common.csproj", "{6BC71155-0319-4E67-A72F-48756BAACFF7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{5A2546E5-59C0-4879-9F8D-71E0F927C9DB} = {5A2546E5-59C0-4879-9F8D-71E0F927C9DB}
 	EndProjectSection
@@ -27,8 +27,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientServerGameLogicCommon", "..\ClientServerCommon\ClientServerGameLogicCommon\ClientServerGameLogicCommon.csproj", "{82179748-225A-40DE-B7E4-3A5B70AA276C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScsService.Client", "ScsService\ScsService.Client\ScsService.Client.csproj", "{3FF31737-AA75-4EF3-9E8F-F05C07DDD8BC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreadTest", "ThreadTest\ThreadTest.csproj", "{8A1FC83A-9569-4763-B078-8EA213B74A0D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectionIntegrationTest", "ScsService\Tests\ConnectionIntegrationTest\ConnectionIntegrationTest.csproj", "{9151F5BB-1FDE-435B-A916-028D791134F3}"
 EndProject
@@ -78,10 +76,6 @@ Global
 		{3FF31737-AA75-4EF3-9E8F-F05C07DDD8BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FF31737-AA75-4EF3-9E8F-F05C07DDD8BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FF31737-AA75-4EF3-9E8F-F05C07DDD8BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A1FC83A-9569-4763-B078-8EA213B74A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A1FC83A-9569-4763-B078-8EA213B74A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A1FC83A-9569-4763-B078-8EA213B74A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A1FC83A-9569-4763-B078-8EA213B74A0D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9151F5BB-1FDE-435B-A916-028D791134F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9151F5BB-1FDE-435B-A916-028D791134F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9151F5BB-1FDE-435B-A916-028D791134F3}.Release|Any CPU.ActiveCfg = Release|Any CPU

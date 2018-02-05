@@ -66,19 +66,19 @@ namespace ConnectionIntegrationTest
         //---connect disconnect
         void ScsServer_OnUserLogin(object sender, UserEventArgs e)
         {
-            _users.Add(e.User.Messenger, e.User);
+            _users.Add(e.User.Client, e.User);
 
             Console.WriteLine("A new User is connected. User.Login =" + e.User.Login);
 
             _clietnsTestProgress[TestOptions.GetUserIndexFromLogin(e.User.Login)].Step = TestStep.StepConnect_And_Autentificate_AllClient;
 
             TestOptions.StepConnect_And_Autentificate_AllClient.currentValue++;
-            e.User.Messenger.SendMessage(new TestMessage(TestMessage.State.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection_1));
+            e.User.Client.SendMessage(new TestMessage(TestMessage.State.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection_1));
         }
 
         void ScsServer_OnUserDisconnected(object sender, UserEventArgs e)
         {
-            _users.Remove(e.User.Messenger);
+            _users.Remove(e.User.Client);
 
             Console.WriteLine("User is Disconnected. User.Login =" + e.User.Login);
 
