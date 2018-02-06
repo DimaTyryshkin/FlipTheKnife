@@ -11,7 +11,7 @@ namespace ToonKnife.Server
     /// <summary>
     /// Очередь клдиентов на бой
     /// </summary>
-    class UserFightQueue
+    public class UserFightQueue
     {
         public class Entry
         {

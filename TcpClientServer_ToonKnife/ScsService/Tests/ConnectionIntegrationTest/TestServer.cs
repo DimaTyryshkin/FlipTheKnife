@@ -24,11 +24,11 @@ namespace ConnectionIntegrationTest
 
             _clietnsTestProgress = new List<TestStepProgres>();
 
-            foreach (var clietnIndex in Enumerable.Range(0, TestOptions.UserCount))
+            foreach (var clietnIndex in Enumerable.Range(0, ScsServiseTest.current.UserCount))
                 _clietnsTestProgress.Add(new TestStepProgres());
 
 
-            scsServer = new ScsService.Server.ScsService(TestOptions.ServerPort);
+            scsServer = new ScsService.Server.ScsService(ScsServiseTest.current.ServerPort);
             scsServer.MsgReaders.RegisterMsgReader<TestMessage>(OnTestMessage);
 
             scsServer.OnUserLogin += ScsServer_OnUserLogin;
@@ -51,15 +51,15 @@ namespace ConnectionIntegrationTest
         {
             Console.WriteLine("-------------------------------------");
             if (_clietnsTestProgress.All(p => (int)p.Step >= (int)TestStep.StepConnect_And_Autentificate_AllClient))
-                TestOptions.StepConnect_And_Autentificate_AllClient.succes = true;
+                ScsServiseTest.StepConnect_And_Autentificate_AllClient.succes = true;
 
             if (_clietnsTestProgress.All(p => (int)p.Step >= (int)TestStep.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection))
-                TestOptions.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection.succes = true;
+                ScsServiseTest.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection.succes = true;
 
             if (_clietnsTestProgress.All(p => (int)p.Step >= (int)TestStep.StepDisconnectAllClient))
-                TestOptions.StepDisconnectAllClient.succes = true;
+                ScsServiseTest.StepDisconnectAllClient.succes = true;
 
-            TestOptions.PrintAllResult();
+            ScsServiseTest.current.PrintAllResult();
         }
 
 
@@ -70,9 +70,9 @@ namespace ConnectionIntegrationTest
 
             Console.WriteLine("A new User is connected. User.Login =" + e.User.Login);
 
-            _clietnsTestProgress[TestOptions.GetUserIndexFromLogin(e.User.Login)].Step = TestStep.StepConnect_And_Autentificate_AllClient;
+            _clietnsTestProgress[ScsServiseTest.GetUserIndexFromLogin(e.User.Login)].Step = TestStep.StepConnect_And_Autentificate_AllClient;
 
-            TestOptions.StepConnect_And_Autentificate_AllClient.currentValue++;
+            ScsServiseTest.StepConnect_And_Autentificate_AllClient.currentValue++;
             e.User.Client.SendMessage(new TestMessage(TestMessage.State.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection_1));
         }
 
@@ -82,8 +82,8 @@ namespace ConnectionIntegrationTest
 
             Console.WriteLine("User is Disconnected. User.Login =" + e.User.Login);
 
-            TestOptions.StepDisconnectAllClient.currentValue++;
-            _clietnsTestProgress[TestOptions.GetUserIndexFromLogin(e.User.Login)].Step = TestStep.StepDisconnectAllClient;
+            ScsServiseTest.StepDisconnectAllClient.currentValue++;
+            _clietnsTestProgress[ScsServiseTest.GetUserIndexFromLogin(e.User.Login)].Step = TestStep.StepDisconnectAllClient;
         }
 
 
@@ -95,7 +95,7 @@ namespace ConnectionIntegrationTest
 
         int GetUserIndex(ReceivedMsg msg)
         {
-            return TestOptions.GetUserIndexFromLogin(GetUser(msg).Login);
+            return ScsServiseTest.GetUserIndexFromLogin(GetUser(msg).Login);
         }
 
 
@@ -104,7 +104,7 @@ namespace ConnectionIntegrationTest
         {
             if (msg._state == TestMessage.State.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection_2)
             {
-                TestOptions.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection.currentValue++;
+                ScsServiseTest.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection.currentValue++;
              _clietnsTestProgress[GetUserIndex(receivedMsg)].Step = TestStep.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection;
             }
         }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ToonKnife.Server.Fight
 {
-    class GameLoop
+    public class GameLoop
     {
         Game _game;
         bool _isUpdate;

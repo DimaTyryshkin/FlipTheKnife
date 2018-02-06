@@ -49,27 +49,15 @@ namespace ToonKnife.Server
         }
 
         private void UserFightQueue_UserPairReady(object sender, UserFightQueue.Entry[] users)
-        { 
-            _fightList.CreateNewFight(users);
+        {
+            var fight = _fightList.CreateNewFight(users);
+            _fightList.AddFight(fight);
         }
       
 
         public void Stop()
         {
             _scsServer.Stop();
-        }
-
-        void Server_ClientConnected(object sender, ServerClientEventArgs e)
-        {
-            Console.WriteLine("A new client is connected. Client Id = " + e.Client.ClientId);
-
-            //Register to MessageReceived event to receive messages from new client
-            //e.Client.MessageReceived += Client_MessageReceived;
-        }
-
-        void Server_ClientDisconnected(object sender, ServerClientEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        } 
     }
 }

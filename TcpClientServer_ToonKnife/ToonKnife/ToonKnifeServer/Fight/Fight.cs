@@ -9,7 +9,7 @@ using ToonKnife.Server.DataAsses;
 
 namespace ToonKnife.Server.Fight
 {
-    class Fight
+    public class Fight
     {
         public struct KnifeInfo
         {

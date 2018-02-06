@@ -1,7 +1,7 @@
 ﻿
 namespace ToonKnife.Server
 {
-    internal class ToonKnifeUser
+    public class ToonKnifeUser
     {
     }
 }

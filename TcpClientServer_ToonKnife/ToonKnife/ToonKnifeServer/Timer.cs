@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ToonKnife.Server
 {
-    class Timer
+    public class Timer
     {
         static Timer _instanse;
         public static Timer Instanse

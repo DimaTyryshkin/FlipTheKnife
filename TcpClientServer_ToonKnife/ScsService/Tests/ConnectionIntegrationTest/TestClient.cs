@@ -15,7 +15,7 @@ namespace ConnectionIntegrationTest
         public TestClient(int serverPort, int clientIndex)
         {
             _index = clientIndex;
-            _clietn = new ScsClient(TestOptions.GetUserLogin(clientIndex), "127.0.0.1", serverPort);
+            _clietn = new ScsClient(ScsServiseTest.GetUserLogin(clientIndex), "127.0.0.1", serverPort);
             
             _clietn.OnUserLogin += Client_OnUserLogin;
 

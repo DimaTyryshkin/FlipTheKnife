@@ -10,7 +10,7 @@ using ToonKnife.Common.ScsMessages;
 
 namespace ToonKnife.Server.Fight
 {
-    class UserFighterController : IFighterController
+    public class UserFighterController : IFighterController
     {
         User _user;
         Fight _fight;

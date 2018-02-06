@@ -2,7 +2,7 @@
 
 namespace ToonKnife.Server
 {
-    internal class ToonKnifeUserEventArgs : EventArgs
+    public class ToonKnifeUserEventArgs : EventArgs
     {
         public ToonKnifeUser Client { get; private set; }
 

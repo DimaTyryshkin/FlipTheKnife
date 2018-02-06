@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ToonKnife.Server.Fight
 {
-    class KnifeThrowEventArgs : EventArgs
+    public class KnifeThrowEventArgs : EventArgs
     {
         public int knifeIndex;
         public DateTime timeThrow;

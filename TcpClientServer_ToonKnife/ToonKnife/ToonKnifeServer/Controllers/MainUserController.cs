@@ -12,7 +12,7 @@ using ToonKnife.Server.DataAsses;
 
 namespace ToonKnife.Server.Controllers
 {
-    class MainUserController
+    public class MainUserController
     {
         User _user;
         UserFightQueue _userFightQueue;

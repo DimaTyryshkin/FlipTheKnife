@@ -7,7 +7,7 @@ using ToonKnife.Server.DataAsses;
 
 namespace ToonKnife.Server.Fight
 {
-    class FightList
+    public class FightList
     {
         public class UserVsUserFight
         {
@@ -22,9 +22,13 @@ namespace ToonKnife.Server.Fight
             }
         }
 
+
+
         SettingsStorage _setingsStorage;
 
         List<UserVsUserFight> fightsList;
+
+
 
         public FightList(SettingsStorage setingsStorage)
         {
@@ -33,7 +37,7 @@ namespace ToonKnife.Server.Fight
             fightsList = new List<UserVsUserFight>();
         }
 
-        internal void CreateNewFight(UserFightQueue.Entry[] fighters)
+        public UserVsUserFight CreateNewFight(UserFightQueue.Entry[] fighters)
         {
             var knifesInfo = fighters.Select(f => new Fight.KnifeInfo(f.knifeName, f.knifeMode)).ToArray();
 
@@ -64,13 +68,20 @@ namespace ToonKnife.Server.Fight
                     );
             }
 
-            fight.FightClose += Fight_FightClose_Handler;
-            fight.Win += Fight_Win;
-
-            fightsList.Add(usersFight);
+            return usersFight;
         }
 
-        private void Fight_Win(object sender, int winKnife)
+        public void AddFight(UserVsUserFight userFight)
+        {
+            userFight.fight.FightClose += Fight_FightClose_Handler;
+            userFight.fight.Win += Fight_Win;
+
+            fightsList.Add(userFight);
+        }
+
+
+
+        void Fight_Win(object sender, int winKnife)
         {
             UserFighterController c = fightsList[((Fight)sender).FightIndex].controllers[winKnife];
 
@@ -78,7 +89,7 @@ namespace ToonKnife.Server.Fight
             // c.User.Login 
         }
 
-        private void Fight_FightClose_Handler(Fight fight)
+        void Fight_FightClose_Handler(Fight fight)
         {
             fight.FightClose -= Fight_FightClose_Handler;
             fight.Win -= Fight_Win;

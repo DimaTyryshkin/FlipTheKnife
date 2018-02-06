@@ -50,6 +50,10 @@
       <Project>{0dc81b09-3abf-4bb3-8c08-4e8ee4432bdc}</Project>
       <Name>Scs</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\IntegrationTestInfrastructure\IntegrationTestInfrastructure.csproj">
+      <Project>{6157FC5E-FD32-4F80-9275-592FCC0557F5}</Project>
+      <Name>IntegrationTestInfrastructure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Common\ScsService.Common.csproj">
       <Project>{5a2546e5-59c0-4879-9f8d-71e0f927c9db}</Project>
       <Name>ScsService.Common</Name>
