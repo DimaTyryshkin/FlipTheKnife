@@ -1,16 +1,12 @@
-﻿using IntegrationTestInfrastructure;
-using ScsService.Common;
-using ScsService.Server;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using IntegrationTestInfrastructure;  
 
 namespace ToonKnife.TestServer
 {
     public class ToonKnifeTest : TestOptions
     {
+        public int WolfTotalCount => (int)(UserCount/2f);
+        public int RabbitTotalCount => WolfTotalCount;
+
         public Step Step_AllUsers_EnqueueInFightQueue = new Step()
         {
             name = "Дождаться пока в очереде на бой побывают все юзеры(каждый встал в очередь)"

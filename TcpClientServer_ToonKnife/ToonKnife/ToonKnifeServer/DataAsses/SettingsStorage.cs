@@ -1,4 +1,5 @@
 ﻿using Assets.game.model.knife;
+using CodeWriter.Config;
 using OEPFramework;
 using System;
 
@@ -12,13 +13,14 @@ namespace ToonKnife.Server.DataAsses
         //---prop
         public RawNode KnifeSettings => _knifeSettings;
 
-        public RawNode Settings => _knifeSettings;
+        public RawNode Settings => _settings;
 
 
         //---methods
-        public SettingsStorage()
+        public SettingsStorage(IConfig config)
         {
-            throw new NotImplementedException();
+            _knifeSettings = config.GetRawNode("knives.json");
+            _settings = config.GetRawNode("settings.json");
         }
     }
 }

@@ -13,13 +13,15 @@ namespace ToonKnife.Server.Fight
         bool _isUpdate;
         int _scoreInFight;
 
-        DateTime _timeEndFight;
+        public DateTime TimeEndFight = new DateTime(2000,1,1);
         DateTime _timeNextThrow;
         DateTime _timeThrow;
 
 
         //---prop
-        public bool CanThrow => DateTime.Now >= _timeNextThrow && _game.knife.state == Knife.State.Freeze;
+        public bool CanThrow => DateTime.Now >= _timeNextThrow &&
+             DateTime.Now <= TimeEndFight &&
+            _game.knife.state == Knife.State.Freeze ;
 
         public int ScoreInFight => _scoreInFight;
 
@@ -29,11 +31,10 @@ namespace ToonKnife.Server.Fight
 
 
         //---methods
-        public GameLoop(Game game, DateTime timeEndFight)
+        public GameLoop(Game game)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
-            _timeEndFight = timeEndFight;
-
+             
             _timeNextThrow = DateTime.Now;
             _game.knife.throwFail += Knife_throwFail;
             _game.onThrowSuccess += Game_onThrowSuccess;
@@ -77,7 +78,7 @@ namespace ToonKnife.Server.Fight
         {
             StopUpdateLoop();
 
-            if (_timeNextThrow < _timeEndFight)
+            if (_timeNextThrow < TimeEndFight)
             {
                 _scoreInFight += info.score;
             }

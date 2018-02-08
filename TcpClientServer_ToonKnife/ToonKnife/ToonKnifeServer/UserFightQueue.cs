@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToonKnife.Server.Controllers;
 
 namespace ToonKnife.Server
 {
@@ -15,16 +16,16 @@ namespace ToonKnife.Server
     {
         public class Entry
         {
-            public User user;
+            public IControllersFactory controllersFactory;
             public string knifeName;
             public KnifeMode knifeMode;
             public DateTime timeEnqueue;
 
-            public Entry(User user, string knifeName, KnifeMode knifeMode )
+            public Entry(IControllersFactory controllersFactory, string knifeName, KnifeMode knifeMode)
             {
-                this.user = user ?? throw new ArgumentNullException(nameof(user));
+                this.controllersFactory = controllersFactory ?? throw new ArgumentNullException(nameof(controllersFactory));
                 this.knifeName = knifeName ?? throw new ArgumentNullException(nameof(knifeName));
-                this.knifeMode = knifeMode; 
+                this.knifeMode = knifeMode;
             }
         }
 
@@ -32,23 +33,25 @@ namespace ToonKnife.Server
 
         Entry _awaitingUser;
 
+        public event Action<UserFightQueue, Entry> UserEnqueue;
+        public event Action<UserFightQueue, Entry[]> UsersReady;
 
-        public event EventHandler<Entry[]> UsersReady;
-
-        public void AddUser(Entry user)
+        public void Enqueue(Entry entry)
         {
-            user.timeEnqueue = DateTime.Now;
+            entry.timeEnqueue = DateTime.Now;
+
+            UserEnqueue?.Invoke(this, entry);
 
             if (_awaitingUser == null)
             {
-                _awaitingUser = user;
+                _awaitingUser = entry;
             }
             else
             {
                 var oldUser = _awaitingUser;
                 _awaitingUser = null;
 
-                UsersReady?.Invoke(this, new Entry[] { oldUser, user });
+                UsersReady?.Invoke(this, new Entry[] { oldUser, entry });
             }
         }
 

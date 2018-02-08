@@ -208,6 +208,9 @@ namespace Assets.game.logic.playground.common
 
             while (flight)
             {
+                if (time > 10)
+                    throw new Exception("KnifePhysicsModel.cs time > 10");
+
                 time += timeStep;
 
                 oldY = y;

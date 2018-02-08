@@ -27,6 +27,9 @@ namespace ToonKnife.Server.Fight
         GameLoop[] games;
         DateTime timeEndFight;
         int _knifesReadyCounter;
+        bool figthClosed;
+
+        TimeSpan _fightLength = TimeSpan.FromSeconds(60);
 
         //---prop
         public int FightIndex { get; }
@@ -39,6 +42,7 @@ namespace ToonKnife.Server.Fight
         /// минимум 2 победителя(ничья)
         /// </summary>
         public event Action<Fight> DeatHead;
+        public event Action<Fight, int> KnifeReady;
         public event EventHandler<KnifeThrowEventArgs> KnifeThrow;
         public event Action<Fight> FightClose;
         public event Action<Fight> FightStart;
@@ -54,8 +58,9 @@ namespace ToonKnife.Server.Fight
             for (int i = 0; i < knifes.Length; i++)
             {
                 Game g = new Game(knifeDefStorage.KnifeSettings, knifeDefStorage.Settings);
+                g.SetKnifeMode(knifes[i].knifeName, knifes[i].knifeMode);
 
-                games[i] = new GameLoop(g, timeEndFight);
+                games[i] = new GameLoop(g);
             }
         }
 
@@ -63,29 +68,22 @@ namespace ToonKnife.Server.Fight
         {
             GameLoop gameLoop = games[knifeIndex];
 
-            return !WaitForReady && gameLoop.CanThrow;
+            return !WaitForReady && gameLoop.CanThrow && !figthClosed;
         }
 
-        public void SetOneKnifeReady()
+        public void SetOneKnifeReady(int knifeIndex)
         {
             _knifesReadyCounter--;
+            KnifeReady.Invoke(this, knifeIndex);
 
             if (_knifesReadyCounter == 0)
             {
-                StartFight();
                 WaitForReady = false;
+                StartFight();
             }
         }
 
-        void StartFight()
-        {
-            timeEndFight = DateTime.Now + TimeSpan.FromSeconds(60);
-            Timer.AddTimer(FightEnd_Timer, timeEndFight);
-
-            FightStart?.Invoke(this);
-        }
-
-        internal void ThrowKnife(int knifeIndex, float input)
+        public void ThrowKnife(int knifeIndex, float input)
         {
             GameLoop gameLoop = games[knifeIndex];
 
@@ -94,6 +92,22 @@ namespace ToonKnife.Server.Fight
                 gameLoop.Throw(input);
                 KnifeThrow?.Invoke(this, new KnifeThrowEventArgs(knifeIndex, gameLoop.TimeThrow, gameLoop.TimeNextThrow, input));
             }
+        }
+
+
+
+        void StartFight()
+        {
+            timeEndFight = DateTime.Now + _fightLength;
+
+            foreach (var gaemLoop in games)
+            {
+                gaemLoop.TimeEndFight = timeEndFight;
+            }
+
+            Timer.AddTimer(FightEnd_Timer, timeEndFight);
+
+            FightStart?.Invoke(this);
         }
 
         void FightEnd_Timer()

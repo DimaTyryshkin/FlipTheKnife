@@ -15,18 +15,10 @@ namespace ConnectionIntegrationTest
         ScsService.Server.ScsService scsServer;
 
         Dictionary<IMessenger, User> _users;
-        List<TestStepProgres> _clietnsTestProgress;
-
 
         public TestServer(int tcpPort)
         {
             _users = new Dictionary<IMessenger, User>();
-
-            _clietnsTestProgress = new List<TestStepProgres>();
-
-            foreach (var clietnIndex in Enumerable.Range(0, ScsServiseTest.current.UserCount))
-                _clietnsTestProgress.Add(new TestStepProgres());
-
 
             scsServer = new ScsService.Server.ScsService(ScsServiseTest.current.ServerPort);
             scsServer.MsgReaders.RegisterMsgReader<TestMessage>(OnTestMessage);
@@ -39,7 +31,7 @@ namespace ConnectionIntegrationTest
 
         public void LoopFrame()
         {
-            scsServer.MainLoopFrame(); 
+            scsServer.MainLoopFrame();
         }
 
         public void Stop()
@@ -49,16 +41,6 @@ namespace ConnectionIntegrationTest
 
         public void PrintResult()
         {
-            Console.WriteLine("-------------------------------------");
-            if (_clietnsTestProgress.All(p => (int)p.Step >= (int)TestStep.StepConnect_And_Autentificate_AllClient))
-                ScsServiseTest.StepConnect_And_Autentificate_AllClient.succes = true;
-
-            if (_clietnsTestProgress.All(p => (int)p.Step >= (int)TestStep.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection))
-                ScsServiseTest.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection.succes = true;
-
-            if (_clietnsTestProgress.All(p => (int)p.Step >= (int)TestStep.StepDisconnectAllClient))
-                ScsServiseTest.StepDisconnectAllClient.succes = true;
-
             ScsServiseTest.current.PrintAllResult();
         }
 
@@ -70,9 +52,8 @@ namespace ConnectionIntegrationTest
 
             Console.WriteLine("A new User is connected. User.Login =" + e.User.Login);
 
-            _clietnsTestProgress[ScsServiseTest.GetUserIndexFromLogin(e.User.Login)].Step = TestStep.StepConnect_And_Autentificate_AllClient;
+            ScsServiseTest.StepConnect_And_Autentificate_AllClient.IncrimentCounter(e.User.Login);
 
-            ScsServiseTest.StepConnect_And_Autentificate_AllClient.currentValue++;
             e.User.Client.SendMessage(new TestMessage(TestMessage.State.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection_1));
         }
 
@@ -82,8 +63,7 @@ namespace ConnectionIntegrationTest
 
             Console.WriteLine("User is Disconnected. User.Login =" + e.User.Login);
 
-            ScsServiseTest.StepDisconnectAllClient.currentValue++;
-            _clietnsTestProgress[ScsServiseTest.GetUserIndexFromLogin(e.User.Login)].Step = TestStep.StepDisconnectAllClient;
+            ScsServiseTest.StepDisconnectAllClient.IncrimentCounter(e.User.Login);
         }
 
 
@@ -104,8 +84,7 @@ namespace ConnectionIntegrationTest
         {
             if (msg._state == TestMessage.State.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection_2)
             {
-                ScsServiseTest.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection.currentValue++;
-             _clietnsTestProgress[GetUserIndex(receivedMsg)].Step = TestStep.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection;
+                ScsServiseTest.Step_SendMsg_And_GetResponse_FromAllClients_UsingConcurrentEventQueue_And_MsgReadersCollection.IncrimentCounter(GetUser(receivedMsg).Login);
             }
         }
     }

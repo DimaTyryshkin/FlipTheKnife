@@ -10,6 +10,7 @@ using ToonKnife.Server.DataAsses;
 using ToonKnife.Server.Controllers;
 using ToonKnife.Server.Fight;
 using System.Linq;
+using DataAsses.Config;
 
 namespace ToonKnife.Server
 {
@@ -20,12 +21,12 @@ namespace ToonKnife.Server
         SettingsStorage _setingsStorage;
         FightList _fightList;
 
-        Dictionary<User,MainUserController> _userControllers;
-          
+        Dictionary<User, IMainController> _userControllers;
+
         public Server(int tcpPort)
         {
-            _userControllers = new Dictionary<User, MainUserController>();
-            _setingsStorage = new SettingsStorage();
+            _userControllers = new Dictionary<User, IMainController>();
+            _setingsStorage = new SettingsStorage(new TextFileConfig("ToonKnife"));
             _fightList = new FightList(_setingsStorage);
 
             _userFightQueue = new UserFightQueue();
@@ -38,7 +39,9 @@ namespace ToonKnife.Server
 
         private void ScsServer_OnUserLogin(object sender, UserEventArgs e)
         {
-            MainUserController mainUserController = new MainUserController(e.User, _userFightQueue, _setingsStorage);
+            UserControllerFactory userControllerFactory = new UserControllerFactory(e.User, _userFightQueue);
+
+            IMainController mainUserController = userControllerFactory.CreateMainController();
             _userControllers.Add(e.User, mainUserController);
         }
 
@@ -50,14 +53,14 @@ namespace ToonKnife.Server
 
         private void UserFightQueue_UserPairReady(object sender, UserFightQueue.Entry[] users)
         {
-            var fight = _fightList.CreateNewFight(users);
-            _fightList.AddFight(fight);
+            var fight = _fightList.CreateAndAddNewFight(users);
+            fight.SendEnemyInfo();
         }
-      
+
 
         public void Stop()
         {
             _scsServer.Stop();
-        } 
+        }
     }
 }

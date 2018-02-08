@@ -17,7 +17,7 @@ namespace ToonKnife.Server.Fight
         int _knifeIndex;
         bool _waitForReady;
 
-        public User User => _user;
+        public string Login => _user.Login;
 
         public UserFighterController(User user, Fight fight, int knifeIndex)
         {
@@ -85,7 +85,7 @@ namespace ToonKnife.Server.Fight
 
                 if (_fight.WaitForReady)
                 {
-                    _fight.SetOneKnifeReady();
+                    _fight.SetOneKnifeReady(_knifeIndex);
                 }
             }
         }

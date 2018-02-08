@@ -1,26 +1,53 @@
-﻿using System; 
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IntegrationTestInfrastructure
 {
     public class TestOptions
     {
-        public struct Step
+        public class Step
         {
             public string name;
-            public bool succes;
 
-            public int currentValue;
+            int counter;
+            int errorCounter;
+            public int overrideValueToSuccess;
 
-            public void SetSuccesAntPrintState()
+            int GetGountToSuccess(int counterValueToSuccess)
             {
-                succes = true;
-                PrintState();
+                return overrideValueToSuccess != 0 ? overrideValueToSuccess : counterValueToSuccess;
             }
 
-            public void PrintState()
+            HashSet<string> existingValues = new HashSet<string>();
+
+            /// <summary>
+            /// Добавляет счетчик если <paramref name="hashValue"/> впервые добавялется
+            /// </summary>
+            /// <param name="hashValue"></param>
+            public void IncrimentCounter(string hashValue)
             {
-                Console.WriteLine((succes ? stepSucces : stepFail) + $" : ({currentValue}) {name}");
+                if (!existingValues.Contains(hashValue))
+                {
+                    counter++;
+                    existingValues.Add(hashValue);
+                }
+                else
+                {
+                    errorCounter++;
+                }
+            }
+
+            public bool IsSuccess(int counterValueToSuccess)
+            {
+                return GetGountToSuccess(counterValueToSuccess) == counter;
+            }
+
+            public void PrintState(int counterValueToSuccess)
+            {
+                int cToSuccess = GetGountToSuccess(counterValueToSuccess);
+
+                Console.WriteLine((IsSuccess(cToSuccess) ? stepSucces : stepFail) + $" : ({counter}/{cToSuccess}) errors: {errorCounter} {name}");
             }
         }
 
@@ -59,31 +86,32 @@ namespace IntegrationTestInfrastructure
         {
             var steps = GetAllSteps();
 
-            foreach (var step in steps.Where(s => !s.succes))
-                step.PrintState();
+            foreach (var step in steps.Where(s => !s.IsSuccess(UserCount)))
+                step.PrintState(UserCount);
 
-            return steps.All(s => s.succes);
+            return steps.All(s => s.IsSuccess(UserCount));
         }
 
         public Step[] GetAllSteps()
         {
-            var allFields = GetType().GetFields(System.Reflection.BindingFlags.Instance| System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+            var allFields = GetType().GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 
             return allFields
                 .Where(f => f.FieldType == typeof(Step))
-                .Select(f => f.GetValue(null))
+                .Select(f => f.GetValue(this))
                 .Cast<Step>()
                 .ToArray();
         }
 
         public void PrintAllResult()
         {
+            Console.WriteLine("-------------------------------------");
             Console.WriteLine($"UserCount = {UserCount}");
 
             var steps = GetAllSteps();
 
             foreach (var step in steps)
-                step.PrintState();
+                step.PrintState(UserCount);
         }
     }
 }

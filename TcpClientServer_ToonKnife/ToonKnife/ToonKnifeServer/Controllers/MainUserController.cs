@@ -12,15 +12,17 @@ using ToonKnife.Server.DataAsses;
 
 namespace ToonKnife.Server.Controllers
 {
-    public class MainUserController
+    public class MainUserController : IMainController
     {
+        UserControllerFactory _controllersFactory;
         User _user;
-        UserFightQueue _userFightQueue;
-        SettingsStorage _knifeDefStorage;
+        UserFightQueue _userFightQueue; 
 
-        public MainUserController(User user, UserFightQueue userFightQueue, SettingsStorage knifeDefStorage)
-        {
-            _knifeDefStorage = knifeDefStorage ?? throw new ArgumentNullException(nameof(knifeDefStorage));
+        public string Login => _user.Login;
+
+        public MainUserController(UserControllerFactory controllersFactory, User user, UserFightQueue userFightQueue)
+        { 
+            _controllersFactory = controllersFactory ?? throw new ArgumentNullException(nameof(controllersFactory));
             _user = user ?? throw new ArgumentNullException(nameof(user));
             _userFightQueue = userFightQueue ?? throw new ArgumentNullException(nameof(userFightQueue));
 
@@ -29,7 +31,7 @@ namespace ToonKnife.Server.Controllers
             _user.Disconnected += User_Disconnected;
         }
 
-        private void User_Disconnected(object sender, ClientEvent e)
+        void User_Disconnected(object sender, ClientEvent e)
         {
             throw new NotImplementedException();
         }
@@ -39,8 +41,9 @@ namespace ToonKnife.Server.Controllers
 
         void FightQueueMessage_Reader(ReceivedMsg receivedMsg, FightQueueMessage msg)
         {
-            UserFightQueue.Entry entry = new UserFightQueue.Entry(_user, msg.KnifeName, msg.KnifeMode);
-            _userFightQueue.AddUser(entry);
+            // TODO проверку чтобы 2 раза в очередь нельзя было вставать
+            UserFightQueue.Entry entry = new UserFightQueue.Entry(_controllersFactory, msg.KnifeName, msg.KnifeMode);
+            _userFightQueue.Enqueue(entry);
         }
     }
 }

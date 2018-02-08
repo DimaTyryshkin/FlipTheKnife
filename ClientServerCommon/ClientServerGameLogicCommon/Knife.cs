@@ -110,7 +110,8 @@ namespace Assets.game.logic.playground.common
                     }
                 }
 
-                moved(frame);
+                if (moved != null)
+                    moved(frame);
 
                 if (m_timeAfterThrow >= knifeTrajectory.lastFrame.timeAfterThrow)
                 {

@@ -1,0 +1,67 @@
+{
+  "so_close_angle": 5.0,
+  "reference_height": 1920,
+  "height_multiplier": 260,
+  "knife_min_force": 300,
+  "knife_max_force": 1500,
+  "knife_flip_mode": "sling",
+  "flips_bonus_flips": [
+    10,
+    25,
+    50,
+    100,
+    250
+  ],
+  "flips_bonus_gold": [
+    2,
+    5,
+    10,
+    20,
+    30
+  ],
+  "modes": {
+    "default": {
+      "knife_bounce_multiplier": 5,
+      "rotation_decrease": 50,
+      "rotation_min_speed": 20,
+      "success_deflection": 40,
+      "perfect_success_deflection": 5
+    },
+    "slow": {
+      "time_scale": 2.3,
+      "gravity": -1180,
+      "rotation_speed": 325,
+      "rotation_decrease": 240,
+      "rotation_min_speed": 135,
+      "success_deflection": 35,
+      "perfect_success_deflection": 5
+    },
+    "medium": {
+      "time_scale": 3,
+      "gravity": -950,
+      "rotation_speed": 160,
+      "rotation_decrease": 15,
+      "rotation_min_speed": 15,
+      "success_deflection": 50,
+      "perfect_success_deflection": 9
+    },
+    "fast": {
+      "time_scale": 3.3,
+      "gravity": -900,
+      "rotation_speed": 270,
+      "rotation_decrease": 10,
+      "rotation_min_speed": 20,
+      "success_deflection": 43,
+      "perfect_success_deflection": 5
+    },
+    "veryfast": {
+      "time_scale": 3.2,
+      "gravity": -850,
+      "rotation_speed": 430,
+      "rotation_decrease": 45,
+      "rotation_min_speed": 330,
+      "success_deflection": 47,
+      "perfect_success_deflection": 5
+    }
+  }
+}
