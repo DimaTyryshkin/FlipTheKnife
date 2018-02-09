@@ -45,7 +45,7 @@ namespace ToonKnife.Server.ScsServiceAdapter.Controllers
         //---handlers
         private void Fight_DeatHead_Handler(Fight.Fight obj)
         {
-            _user.SendMsg(new EndFightMessage(-1, isDeatHead: true));
+            _user.SendMsg(new EndFightMessage(-1));
         }
 
         void Fight_FightStart_Handler(Fight.Fight obj)
@@ -61,7 +61,7 @@ namespace ToonKnife.Server.ScsServiceAdapter.Controllers
 
         void Fight_Win_Handler(object sender, int winerIndex)
         {
-            _user.SendMsg(new EndFightMessage(_knifeIndex, isDeatHead: false));
+            _user.SendMsg(new EndFightMessage(_knifeIndex));
         }
 
         //---readers

@@ -68,6 +68,14 @@
       <Project>{6157fc5e-fd32-4f80-9275-592fcc0557f5}</Project>
       <Name>IntegrationTestInfrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\ScsService\Server\ScsService.Server.csproj">
+      <Project>{C2BAC628-3F83-4A7F-90B0-83709B8C79E4}</Project>
+      <Name>ScsService.Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ToonKnife.Server.ScsServiceAdapter\ToonKnife.Server.ScsServiceAdapter.csproj">
+      <Project>{DABE7F4F-B4A2-4483-BC40-F1509027B211}</Project>
+      <Name>ToonKnife.Server.ScsServiceAdapter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ToonKnifeServerClientCommon\ToonKnife.Common.csproj">
       <Project>{6bc71155-0319-4e67-a72f-48756baacff7}</Project>
       <Name>ToonKnife.Common</Name>

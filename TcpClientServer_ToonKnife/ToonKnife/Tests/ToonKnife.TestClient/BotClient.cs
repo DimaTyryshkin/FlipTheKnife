@@ -23,10 +23,14 @@ namespace ToonKnife.TestClient
             _client.OnUserLogin += Client_OnUserLogin;
             _isWolf = isWolf;
             _gamesCount = gamesCount;
+
+            _client.Connect();
         }
 
         private void Client_OnUserLogin()
         {
+            Console.WriteLine(typeof(BotClient).Name + $" Login={_client.Login} userLogin");
+
             _mainServerController = new MainServerController(_client);
             _mainServerController.FigthCreated += MainServerController_FigthCreated;
 
@@ -35,6 +39,7 @@ namespace ToonKnife.TestClient
 
         void GoToFightQueue()
         {
+            Console.WriteLine(typeof(BotClient).Name + $" Login={_client.Login} created");
             _mainServerController.GoToFightQueue("knife00", KnifeMode.Medium);
         }
 
@@ -48,9 +53,11 @@ namespace ToonKnife.TestClient
 
         void FightController_FightEnd(int obj)
         {
+            _gamesCount--;
+
             if (_gamesCount > 0)
             {
-                _gamesCount--;
+                
                 Timer.AddTimer(GoToFightQueue, DateTime.Now);
             }
             else

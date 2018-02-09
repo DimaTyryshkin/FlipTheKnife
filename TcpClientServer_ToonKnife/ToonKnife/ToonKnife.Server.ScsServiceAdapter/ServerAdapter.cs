@@ -18,15 +18,16 @@ namespace ToonKnife.Server.ScsServiceAdapter
 
         public ServerAdapter(int serverPort)
         {
+            _toonKnifeServer = new Server();
+
             _scsServer = new ScsService.Server.ScsService(5500);
             _scsServer.OnUserLogin += ScsServer_OnUserLogin;
             _scsServer.OnUserDisconnected += ScsServer_OnUserDisconnected;
-
-            _toonKnifeServer = new Server();
         }
 
         public void Update()
         {
+            _scsServer.MainLoopFrame();
             _toonKnifeServer.UpdateLoop();
         }
 

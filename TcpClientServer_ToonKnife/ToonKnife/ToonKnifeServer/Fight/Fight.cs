@@ -29,7 +29,7 @@ namespace ToonKnife.Server.Fight
         int _knifesReadyCounter;
         bool figthClosed;
 
-        TimeSpan _fightLength = TimeSpan.FromSeconds(60);
+        TimeSpan _fightLength = TimeSpan.FromSeconds(10);
 
         //---prop
         public int FightIndex { get; }
@@ -136,7 +136,7 @@ namespace ToonKnife.Server.Fight
                     break;
                 }
             }
-
+            Console.WriteLine("Figth end deathead="+ deadHeat);
             if (deadHeat)
             {
                 DeatHead?.Invoke(this);

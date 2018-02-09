@@ -5,6 +5,7 @@ using Hik.Communication.Scs.Communication.Messages;
 
 namespace ToonKnife.Common.ScsMessages
 {
+    [Serializable]
     public class FightCteatedMessage : ScsMessage
     {
         public int KnifeIndex;

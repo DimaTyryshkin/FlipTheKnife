@@ -22,6 +22,8 @@ namespace ToonKnife.TestClient
 
         public FightBot(string login, bool isWolf, FightController fightController)
         {
+            Console.WriteLine(typeof(FightBot).Name + $" Login={Login} created");
+
             Login = login;
             _isWolf = isWolf;
             _fightController = fightController;
@@ -77,6 +79,7 @@ namespace ToonKnife.TestClient
 
         void FightController_FightStart()
         {
+            Console.WriteLine(typeof(FightBot).Name + $" Login={Login} fightStart");
             Thorow();
         }
 

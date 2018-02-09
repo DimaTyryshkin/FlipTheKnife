@@ -39,7 +39,7 @@ namespace Hik.Communication.Scs.Client.Tcp
             }
             else
             {
-                throw new System.NotSupportedException("DnsEndPoint нет в net 3.5. Возможно тут заменить на обычный IPEndPoint?");
+                throw new System.NotSupportedException("DnsEndPoint нет в net 3.5. Используйте строковое представление ip. Возможно тут заменить на обычный IPEndPoint?");
                 //endpoint = new DnsEndPoint(_serverEndPoint.IpAddress, _serverEndPoint.TcpPort);
             }
 
