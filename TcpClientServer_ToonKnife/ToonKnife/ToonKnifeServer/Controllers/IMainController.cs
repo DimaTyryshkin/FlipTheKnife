@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ToonKnife.Server.Controllers
 {
-    public interface IMainController : INamedController
+    public interface IMainController : IController
     {
-
+        
     }
 }

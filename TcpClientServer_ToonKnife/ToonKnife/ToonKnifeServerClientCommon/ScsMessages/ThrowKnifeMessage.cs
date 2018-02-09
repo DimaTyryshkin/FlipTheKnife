@@ -7,14 +7,21 @@ namespace ToonKnife.Common.ScsMessages
 {
     public class ThrowKnifeMessage : ScsMessage
     {
+        public int KnifeId;
+
         public float Input { get; }
         public DateTime TimeNextThrow { get; }
         public DateTime TimeThrow { get; }
 
-
-        public ThrowKnifeMessage(float input, DateTime timeThrow, DateTime timeNextThrow, string repliedMessageId = null) : base(repliedMessageId)
+        public ThrowKnifeMessage(float input)
         {
             Input = input;
+        }
+
+        public ThrowKnifeMessage(float input, int knifeId, DateTime timeThrow, DateTime timeNextThrow, string repliedMessageId = null) : base(repliedMessageId)
+        {
+            Input = input;
+            KnifeId = knifeId;
             TimeNextThrow = timeNextThrow;
             TimeThrow = timeThrow;
         }

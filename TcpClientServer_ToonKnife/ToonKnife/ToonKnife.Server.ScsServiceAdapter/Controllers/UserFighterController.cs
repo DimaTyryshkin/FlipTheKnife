@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Assets.game.model.knife;
 using ScsService.Common;
 using ScsService.Server;
 using ToonKnife.Common.ScsMessages;
+using ToonKnife.Server.Fight;
 
-namespace ToonKnife.Server.Fight
+namespace ToonKnife.Server.ScsServiceAdapter.Controllers
 {
     public class UserFighterController : IFighterController
     {
         User _user;
-        Fight _fight;
+        Fight.Fight _fight;
         int _knifeIndex;
         bool _waitForReady;
 
         public string Login => _user.Login;
 
-        public UserFighterController(User user, Fight fight, int knifeIndex)
+        public UserFighterController(User user, Fight.Fight fight, int knifeIndex)
         {
             _user = user ?? throw new ArgumentNullException(nameof(user));
             _fight = fight ?? throw new ArgumentNullException(nameof(fight));
@@ -39,17 +38,17 @@ namespace ToonKnife.Server.Fight
         {
             _waitForReady = true;
 
-            var msg = new FightCteatedMessage(enemyName, enemyKnifeName, enemyKnifeMode);
+            var msg = new FightCteatedMessage(_knifeIndex, enemyName, enemyKnifeName, enemyKnifeMode);
             _user.SendMsg(msg);
         }
 
         //---handlers
-        private void Fight_DeatHead_Handler(Fight obj)
+        private void Fight_DeatHead_Handler(Fight.Fight obj)
         {
-            _user.SendMsg(new EndFightMessage(isWinner: false, isDeatHead: true));
+            _user.SendMsg(new EndFightMessage(-1, isDeatHead: true));
         }
 
-        void Fight_FightStart_Handler(Fight obj)
+        void Fight_FightStart_Handler(Fight.Fight obj)
         {
             var startFightMessage = new StartFightMessage();
             _user.SendMsg(startFightMessage);
@@ -57,15 +56,12 @@ namespace ToonKnife.Server.Fight
 
         void Kight_KnifeThrow_Handler(object sender, KnifeThrowEventArgs e)
         {
-            if (e.knifeIndex != _knifeIndex)
-            {
-                _user.SendMsg(new ThrowKnifeMessage(e.input, e.timeThrow, e.timeNextThrow));
-            }
+            _user.SendMsg(new ThrowKnifeMessage(e.input, e.knifeIndex, e.timeThrow, e.timeNextThrow));
         }
 
         void Fight_Win_Handler(object sender, int winerIndex)
         {
-            _user.SendMsg(new EndFightMessage(isWinner: winerIndex == _knifeIndex, isDeatHead: false));
+            _user.SendMsg(new EndFightMessage(_knifeIndex, isDeatHead: false));
         }
 
         //---readers

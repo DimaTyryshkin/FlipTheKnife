@@ -21,7 +21,7 @@ namespace ConnectionIntegrationTest
             _users = new Dictionary<IMessenger, User>();
 
             scsServer = new ScsService.Server.ScsService(ScsServiseTest.current.ServerPort);
-            scsServer.MsgReaders.RegisterMsgReader<TestMessage>(OnTestMessage);
+            //scsServer.MsgReaders.RegisterMsgReader<TestMessage>(OnTestMessage);
 
             scsServer.OnUserLogin += ScsServer_OnUserLogin;
             scsServer.OnUserDisconnected += ScsServer_OnUserDisconnected;
@@ -49,6 +49,7 @@ namespace ConnectionIntegrationTest
         void ScsServer_OnUserLogin(object sender, UserEventArgs e)
         {
             _users.Add(e.User.Client, e.User);
+            e.User.MsgReaders.RegisterMsgReader<TestMessage>(OnTestMessage);
 
             Console.WriteLine("A new User is connected. User.Login =" + e.User.Login);
 

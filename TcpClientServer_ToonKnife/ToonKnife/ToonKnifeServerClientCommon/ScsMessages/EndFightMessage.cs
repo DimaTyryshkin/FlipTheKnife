@@ -7,17 +7,15 @@ namespace ToonKnife.Common.ScsMessages
 {
     public class EndFightMessage : ScsMessage
     {
-        public bool isWinner;
-
         /// <summary>
-        /// ничья
+        /// если -1 значит ничья
         /// </summary>
-        public bool isDeatHead;
+        public int WinnerKnifeIndex { get; }
 
-        public EndFightMessage(bool isWinner, bool isDeatHead, string repliedMessageId = null) : base(repliedMessageId)
+
+        public EndFightMessage(int winnerKnifeIndex, string repliedMessageId = null) : base(repliedMessageId)
         {
-            this.isWinner = isWinner;
-            this.isDeatHead = isDeatHead;
-        } 
+            WinnerKnifeIndex = winnerKnifeIndex;
+        }
     }
 }

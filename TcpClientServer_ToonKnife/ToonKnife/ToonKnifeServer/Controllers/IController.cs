@@ -1,7 +1,7 @@
 ﻿
 namespace ToonKnife.Server.Controllers
 {
-    public interface INamedController
+    public interface IController
     {
         string Login { get; }
     }

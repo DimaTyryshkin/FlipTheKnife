@@ -10,32 +10,30 @@ namespace ToonKnife.TestServer
     {
         string _login;
         UserFightQueue _userFightQueue;
-        SettingsStorage _knifeDefStorage;
         bool _isWoll;
         ToonKnifeTest _test;
 
         public string Login => _login;
 
 
-        public TestBotControllerFactory(string login, UserFightQueue userFightQueue, SettingsStorage knifeDefStorage, bool isWoll, ToonKnifeTest test)
+        public TestBotControllerFactory(string login, bool isWoll, ToonKnifeTest test)
         {
-            _knifeDefStorage = knifeDefStorage ?? throw new ArgumentNullException(nameof(knifeDefStorage));
             _isWoll = isWoll;
             _test = test;
             _login = login ?? throw new ArgumentNullException(nameof(login));
-            _userFightQueue = userFightQueue ?? throw new ArgumentNullException(nameof(userFightQueue));
         }
-
-
 
         public IFighterController CreateFighterController(Fight fight, int kifeIndexInFight)
         {
             return new TestBotFighterController(_login, fight, kifeIndexInFight, _test, _isWoll);
         }
 
-        public IMainController CreateMainController()
+        public IMainController CreateMainController(UserFightQueue userFightQueue)
         {
-            return new TestBotMainController(this, _userFightQueue, _login);
+            var m = new TestBotMainController(this, userFightQueue, _login);
+            m.GoToFightQueue();//бот сразу идет в очередь
+
+            return m;
         }
     }
 }

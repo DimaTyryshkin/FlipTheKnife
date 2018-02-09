@@ -8,7 +8,7 @@ using ToonKnife.Server.Controllers;
 
 namespace ToonKnife.Server.Fight
 {
-    public interface IFighterController : INamedController
+    public interface IFighterController : IController
     {
         void SendFightCreated(string enemyName, string enemyKnifeName, KnifeMode enemyKnifeMode);
     }

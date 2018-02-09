@@ -15,8 +15,7 @@ namespace ToonKnife.TestServer
         Fight _fight;
         int _knifeIndex;
         ToonKnifeTest _test;
-        bool _isWolf;
-        bool _waitForReady;
+        bool _isWolf; 
         bool _fightIsClosed;
 
         float[] _input;
@@ -73,10 +72,7 @@ namespace ToonKnife.TestServer
 
 
         public void SendFightCreated(string enemyName, string enemyKnifeName, KnifeMode enemyKnifeMode)
-        {
-            _waitForReady = true;
-            _waitForReady = false;
-
+        {  
             _fight.SetOneKnifeReady(_knifeIndex);
         }
 

@@ -14,7 +14,7 @@ namespace ToonKnife.Server.Controllers
     {
         string Login { get; }
 
-        IMainController CreateMainController();
+        IMainController CreateMainController(UserFightQueue userFightQueue);
 
         IFighterController CreateFighterController(Fight.Fight fight, int kifeIndexInFight);
     }

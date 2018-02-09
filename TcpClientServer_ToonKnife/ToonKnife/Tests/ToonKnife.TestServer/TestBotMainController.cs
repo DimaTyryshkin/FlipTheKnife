@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.game.model.knife;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,7 @@ namespace ToonKnife.TestServer
 
         public void GoToFightQueue()
         {
-            UserFightQueue.Entry entry = new UserFightQueue.Entry(_testBotControllerFactory, "knife00", Assets.game.model.knife.KnifeMode.Medium);
+            UserFightQueue.Entry entry = new UserFightQueue.Entry(_testBotControllerFactory, "knife00", KnifeMode.Medium);
             _userFightQueue.Enqueue(entry);
         }
     }

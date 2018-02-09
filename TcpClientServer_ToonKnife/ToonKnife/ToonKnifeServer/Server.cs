@@ -1,66 +1,75 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic; 
 
-using Hik.Communication.Scs.Communication.EndPoints.Tcp; 
-using Hik.Communication.Scs.Server;
-
-using ScsService.Server.Authentication;
-using ScsService.Server;
 using ToonKnife.Server.DataAsses;
 using ToonKnife.Server.Controllers;
 using ToonKnife.Server.Fight;
-using System.Linq;
 using DataAsses.Config;
 
 namespace ToonKnife.Server
 {
     public class Server
-    {
-        ScsService.Server.ScsService _scsServer;
+    { 
         UserFightQueue _userFightQueue;
         SettingsStorage _setingsStorage;
         FightList _fightList;
 
-        Dictionary<User, IMainController> _userControllers;
+        List<IMainController> _userMainController;
+        Dictionary<string, IControllersFactory> _allUsers;
 
-        public Server(int tcpPort)
+        //---prop
+        public FightList FightList => _fightList;
+
+        public UserFightQueue UserFightQueue => _userFightQueue;
+
+
+        //---methods
+        public Server()
         {
-            _userControllers = new Dictionary<User, IMainController>();
+            _allUsers = new Dictionary<string, IControllersFactory>();
+            _userMainController = new List<IMainController>();
+
             _setingsStorage = new SettingsStorage(new TextFileConfig("ToonKnife"));
             _fightList = new FightList(_setingsStorage);
 
             _userFightQueue = new UserFightQueue();
             _userFightQueue.UsersReady += UserFightQueue_UserPairReady;
 
-            _scsServer = new ScsService.Server.ScsService(5500);
-            _scsServer.OnUserLogin += ScsServer_OnUserLogin;
-            _scsServer.OnUserDisconnected += ScsServer_OnUserDisconnected;
+            //_scsServer = new ScsService.Server.ScsService(5500);
+            //_scsServer.OnUserLogin += ScsServer_OnUserLogin;
+            //_scsServer.OnUserDisconnected += ScsServer_OnUserDisconnected;
         }
 
-        private void ScsServer_OnUserLogin(object sender, UserEventArgs e)
+        public void UpdateLoop()
         {
-            UserControllerFactory userControllerFactory = new UserControllerFactory(e.User, _userFightQueue);
+            Timer.Instanse.UpdateFrame(DateTime.Now);
+        }
 
-            IMainController mainUserController = userControllerFactory.CreateMainController();
-            _userControllers.Add(e.User, mainUserController);
+        public void Stop()
+        { 
         }
 
 
-        private void ScsServer_OnUserDisconnected(object sender, UserEventArgs e)
+        public void AddUser(IControllersFactory controllersFactory)
         {
-            _userControllers.Remove(e.User);
+            _allUsers.Add(controllersFactory.Login, controllersFactory);
+
+            IMainController mainUserController = controllersFactory.CreateMainController(_userFightQueue);
+            _userMainController.Add(mainUserController);
         }
 
-        private void UserFightQueue_UserPairReady(object sender, UserFightQueue.Entry[] users)
+        public void RemoveUser(string login)
+        {
+            _allUsers.Remove(login);
+            _userMainController.RemoveAll(c => c.Login == login);
+        }
+
+
+        void UserFightQueue_UserPairReady(object sender, UserFightQueue.Entry[] users)
         {
             var fight = _fightList.CreateAndAddNewFight(users);
             fight.SendEnemyInfo();
-        }
-
-
-        public void Stop()
-        {
-            _scsServer.Stop();
         }
     }
 }

@@ -7,12 +7,14 @@ namespace ToonKnife.Common.ScsMessages
 {
     public class FightCteatedMessage : ScsMessage
     {
+        public int KnifeIndex;
         public string EnemyUserName { get; }
         public string EnemyKnifeName { get; }
         public KnifeMode EnemyKnifeMode { get; }
 
-        public FightCteatedMessage(string userName, string knifeName, KnifeMode knifeMode, string repliedMessageId = null) : base(repliedMessageId)
+        public FightCteatedMessage(int knifeIndex, string userName, string knifeName, KnifeMode knifeMode, string repliedMessageId = null) : base(repliedMessageId)
         {
+
             if (string.IsNullOrEmpty(userName))
             {
                 throw new ArgumentException("message", nameof(userName));
@@ -23,6 +25,7 @@ namespace ToonKnife.Common.ScsMessages
                 throw new ArgumentException("message", nameof(knifeName));
             }
 
+            KnifeIndex = knifeIndex;
             EnemyUserName = userName;
             EnemyKnifeName = knifeName;
             EnemyKnifeMode = knifeMode;

@@ -18,7 +18,7 @@ namespace ScsService.Client
         ConcurrentMsgQueue _msgQueue;
         MsgReadersCollection _msgReaders;
         UserAuthenticationState _authenticationState;
-        string _userName;
+        string _login;
 
         /// <summary>
         /// Сервер отключен. Коммуникация с ним уже не возможна.
@@ -28,7 +28,7 @@ namespace ScsService.Client
         /// <summary>
         /// Сервер полностью готов к работе. Аутентификайия уже прошла.
         /// </summary>
-        public event EventHandler OnUserLogin;
+        public event Action OnUserLogin;
 
 
         //--- prop
@@ -44,11 +44,13 @@ namespace ScsService.Client
 
         public bool IsConnected { get; private set; }
 
+        public string Login => _login; 
+
         //---methods
 
-        public ScsClient(string userName, string ip, int tcpPort)
+        public ScsClient(string login, string ip, int tcpPort)
         {
-            _userName = userName;
+            _login = login;
 
             //Синхронная очередь клиентских событий 
             _eventQueue = new ConcurrentEventQueue();
@@ -96,7 +98,7 @@ namespace ScsService.Client
                 if (reseivedEvent.EventType == ClientEvent.Event.Connected)
                 {
                     IsConnected = true;
-                    _authenticationState = new UserAuthenticationState(_client, _userName);
+                    _authenticationState = new UserAuthenticationState(_client, _login);
                 }
             }
 
@@ -143,7 +145,7 @@ namespace ScsService.Client
                 IsConnected = true;
 
                 if (OnUserLogin != null)
-                    OnUserLogin(this, new EventArgs());
+                    OnUserLogin();
             }
         }
     }

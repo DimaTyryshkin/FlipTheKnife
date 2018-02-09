@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using ToonKnife.Server.DataAsses;
@@ -10,7 +11,9 @@ namespace ToonKnife.Server.Fight
         SettingsStorage _setingsStorage;
 
         List<FightControllersContainer> _fightsList;
-         
+
+        public event Action<FightList, FightControllersContainer> FightCreated;
+
         public FightList(SettingsStorage setingsStorage)
         {
             _setingsStorage = setingsStorage;
@@ -24,7 +27,8 @@ namespace ToonKnife.Server.Fight
             userFight.fight.FightClose += Fight_FightClose_Handler;
             userFight.fight.Win += Fight_Win_Handler;
             _fightsList.Add(userFight);
-            
+
+            FightCreated?.Invoke(this, userFight);
             return userFight;
         }
 

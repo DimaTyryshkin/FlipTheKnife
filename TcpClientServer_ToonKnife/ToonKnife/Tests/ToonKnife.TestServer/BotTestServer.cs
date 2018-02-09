@@ -13,14 +13,9 @@ using ToonKnife.Server.Fight;
 namespace ToonKnife.TestServer
 {
     public class BotTestServer
-    {
-        UserFightQueue _userFightQueue;
-        SettingsStorage _setingsStorage;
-        FightList _fightList;
-
-        List<TestBotControllerFactory> _botControllersFactory;
-
+    { 
         ToonKnifeTest _test;
+        Server.Server _server;
 
         public BotTestServer()
         {
@@ -31,62 +26,50 @@ namespace ToonKnife.TestServer
             _test.Step_AllRabbitUsers_SendFail.overrideValueToSuccess = _test.RabbitTotalCount;
             _test.Step_AllWolfUsers_SendWin.overrideValueToSuccess = _test.WolfTotalCount;
 
-            _botControllersFactory = new List<TestBotControllerFactory>();
-            _setingsStorage = new SettingsStorage(new TextFileConfig("ToonKnife"));
-            _fightList = new FightList(_setingsStorage);
+            _server = new Server.Server();
 
-            _userFightQueue = new UserFightQueue();
-            _userFightQueue.UsersReady += UserFightQueue_UserPairReady;
-            _userFightQueue.UserEnqueue += UserFightQueue_UserEnqueue;
+            _server.UserFightQueue.UserEnqueue += UserFightQueue_UserEnqueue;
+            _server.FightList.FightCreated += FightList_FightCreated;
 
 
             for (int i = 0; i < _test.WolfTotalCount; i++)
             {
                 {
                     Console.WriteLine(typeof(TestBotFighterController).Name + $"Create boots i={i}");
-                    TestBotControllerFactory wolf = new TestBotControllerFactory("TestBot_Wolf_" + i, _userFightQueue, _setingsStorage, true, _test);
-                    TestBotMainController wolfController = (TestBotMainController)wolf.CreateMainController();
-                    wolfController.GoToFightQueue();
-
-                    _botControllersFactory.Add(wolf);
+                    TestBotControllerFactory wolf = new TestBotControllerFactory("TestBot_Wolf_" + i, true, _test);
+                    _server.AddUser(wolf);
                 }
 
                 {
-                    TestBotControllerFactory rabbit = new TestBotControllerFactory("TestBot_Rabbit_" + i, _userFightQueue, _setingsStorage, false, _test);
-                    TestBotMainController rabbitController = (TestBotMainController)rabbit.CreateMainController();
-                    rabbitController.GoToFightQueue();
-
-                    _botControllersFactory.Add(rabbit);
+                    TestBotControllerFactory rabbit = new TestBotControllerFactory("TestBot_Rabbit_" + i, false, _test);
+                    _server.AddUser(rabbit);
                 }
             }
         }
 
+        private void FightList_FightCreated(FightList fightList, FightControllersContainer fightControllersContainer)
+        {
+            fightControllersContainer.fight.KnifeReady += (Fight fight, int index) =>
+            {
+                var controller = fightControllersContainer.GetControllerByIndexInFight(index);
+                _test.Step_AllUsers_WaitForFight_And_SeayReadyToFight.IncrimentCounter(controller.Login);
+            };
+        }
+
         public void Stop()
         {
+            _server.Stop();
             _test.PrintAllResult();
         }
 
         public void UpdateLoop()
         {
-            Timer.Instanse.UpdateFrame(DateTime.Now);
+            _server.UpdateLoop();
         }
 
         void UserFightQueue_UserEnqueue(UserFightQueue sender, UserFightQueue.Entry entry)
         {
             _test.Step_AllUsers_EnqueueInFightQueue.IncrimentCounter(entry.controllersFactory.Login);
-        }
-
-        void UserFightQueue_UserPairReady(object sender, UserFightQueue.Entry[] users)
-        {
-            var fightControillerContainer = _fightList.CreateAndAddNewFight(users);
-
-            fightControillerContainer.fight.KnifeReady += (Fight fight, int index) =>
-              {
-                  var controller = fightControillerContainer.GetControllerByIndexInFight(index);
-                  _test.Step_AllUsers_WaitForFight_And_SeayReadyToFight.IncrimentCounter(controller.Login);
-              };
-
-            fightControillerContainer.SendEnemyInfo();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace ConnectionIntegrationTest
             _clietn.Connect();
         }
 
-        private void Client_OnUserLogin(object sender, EventArgs e)
+        private void Client_OnUserLogin()
         {
             _clietn.MsgReaders.RegisterMsgReader<TestMessage>(TestMetgod);
             //_clietn.AddMessenger(_clietn.Messenger);

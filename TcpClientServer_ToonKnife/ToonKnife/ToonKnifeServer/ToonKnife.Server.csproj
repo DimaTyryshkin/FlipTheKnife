@@ -43,11 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\IController.cs" />
     <Compile Include="Controllers\IControllersFactory.cs" />
     <Compile Include="Controllers\IMainController.cs" />
-    <Compile Include="Controllers\INamedController.cs" />
-    <Compile Include="Controllers\MainUserController.cs" />
-    <Compile Include="Controllers\UserControllerFactory.cs" />
     <Compile Include="DataAsses\SettingsStorage.cs" />
     <Compile Include="Fight\Fight.cs" />
     <Compile Include="Fight\FightControllersContainer.cs" />
@@ -56,7 +54,6 @@
     <Compile Include="Fight\GameLoop.cs" />
     <Compile Include="Fight\IFighterController.cs" />
     <Compile Include="Fight\KnifeThrowEventArgs.cs" />
-    <Compile Include="Fight\UserFighterController.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Timer.cs" />

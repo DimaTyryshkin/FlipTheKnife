@@ -1,16 +1,10 @@
-﻿using Assets.game.model.knife;
-using ScsService.Common;
+﻿using ScsService.Common;
 using ScsService.Server;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ToonKnife.Common.ScsMessages;
+using ToonKnife.Server.Controllers; 
 
-using ToonKnife.Server.DataAsses;
-
-namespace ToonKnife.Server.Controllers
+namespace ToonKnife.Server.ScsServiceAdapter.Controllers
 {
     public class MainUserController : IMainController
     {
