@@ -21,7 +21,7 @@ namespace ToonKnife.TestServer
         Server.Server _server;
         private ScsService.Server.ScsService _scsServer;
 
-        public BotTestServer(int serverPort, int wolfCount)
+        public BotTestServer(int serverPort, int wolfCount, int serverSideBotsCount = 0)
         {
             _test = new ToonKnifeTest();
             ToonKnifeTest.current = _test;
@@ -41,6 +41,11 @@ namespace ToonKnife.TestServer
             _scsServer.OnUserLogin += ScsServer_OnUserLogin;
             _scsServer.OnUserDisconnected += ScsServer_OnUserDisconnected;
             _scsServer.Start();
+
+            for (int i = 0; i < serverSideBotsCount; i++)
+            {
+
+            }
         }
 
         public void Stop()

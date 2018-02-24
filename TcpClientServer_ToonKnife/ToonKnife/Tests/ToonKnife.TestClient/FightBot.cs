@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ToonKnife.Client.ScsServiceAdapter;
 using ToonKnife.Common;
 using ToonKnife.Server;
 
@@ -21,9 +22,7 @@ namespace ToonKnife.TestClient
         public string Login { get; }
 
         public FightBot(string login, bool isWolf, FightController fightController)
-        {
-            Console.WriteLine(typeof(FightBot).Name + $" Login={Login} created");
-
+        { 
             Login = login;
             _isWolf = isWolf;
             _fightController = fightController;
@@ -62,6 +61,8 @@ namespace ToonKnife.TestClient
                     1068f
                     };
             }
+
+            Console.WriteLine(typeof(FightBot).Name + $" Login={Login} created");
         }
 
         private void FightController_FightEnd(int winer)

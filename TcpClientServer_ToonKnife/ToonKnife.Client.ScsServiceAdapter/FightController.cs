@@ -1,5 +1,4 @@
-﻿using Assets.game.model.knife;
-using ScsService.Client;
+﻿using ScsService.Client;
 using ScsService.Common;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using ToonKnife.Common;
 using ToonKnife.Common.ScsMessages;
 
 
-namespace ToonKnife.TestClient
+namespace ToonKnife.Client.ScsServiceAdapter
 {
     public class FightController
     {
@@ -32,11 +31,13 @@ namespace ToonKnife.TestClient
 
         public void SendReady()
         {
+            Console.WriteLine("SendReady-------");
             _client.Messenger.SendMessage(new ReadyToFightMessage());
         }
 
         public void SendThrow(float input)
         {
+            Console.WriteLine("Send Input-------");
             ThrowKnifeMessage throwKnife = new ThrowKnifeMessage(input);
             _client.Messenger.SendMessage(throwKnife);
         }
@@ -45,7 +46,8 @@ namespace ToonKnife.TestClient
 
         void StartFightMessage_Reader(ReceivedMsg receivedMsg, StartFightMessage msg)
         {
-            FightStart?.Invoke();
+            if (FightStart != null)
+                FightStart.Invoke();
         }
 
         void ThrowKnifeMessage_Reader(ReceivedMsg receivedMsg, ThrowKnifeMessage msg)
@@ -56,12 +58,14 @@ namespace ToonKnife.TestClient
                 msg.TimeNextThrow,
                 msg.TimeThrow);
 
-            KnifeThrow?.Invoke(arg);
+            if (KnifeThrow != null)
+                KnifeThrow.Invoke(arg);
         }
 
         void EndFightMessage_Reader(ReceivedMsg receivedMsg, EndFightMessage msg)
         {
-            FightEnd?.Invoke(msg.WinnerKnifeIndex);
+            if (FightEnd != null)
+                FightEnd.Invoke(msg.WinnerKnifeIndex);
         }
     }
 }

@@ -43,8 +43,6 @@
   <ItemGroup>
     <Compile Include="BotClient.cs" />
     <Compile Include="FightBot.cs" />
-    <Compile Include="FightController.cs" />
-    <Compile Include="MainServerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBotClient.cs" />
   </ItemGroup>
@@ -68,6 +66,10 @@
     <ProjectReference Include="..\..\..\ScsService\ScsService.Client\ScsService.Client.csproj">
       <Project>{3ff31737-aa75-4ef3-9e8f-f05c07ddd8bc}</Project>
       <Name>ScsService.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ToonKnife.Client.ScsServiceAdapter\ToonKnife.Client.ScsServiceAdapter.csproj">
+      <Project>{9643a038-cf92-4bff-a8fd-169298093a2f}</Project>
+      <Name>ToonKnife.Client.ScsServiceAdapter</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ToonKnifeServerClientCommon\ToonKnife.Common.csproj">
       <Project>{6BC71155-0319-4E67-A72F-48756BAACFF7}</Project>

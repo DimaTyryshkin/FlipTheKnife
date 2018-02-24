@@ -1,10 +1,12 @@
 ﻿using Assets.game.model.knife;
+using ClientServerGameLogicCommon;
 using Hik.Communication.Scs.Server;
 using ScsService.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ToonKnife.Client.ScsServiceAdapter;
 using ToonKnife.Server;
 
 namespace ToonKnife.TestClient
@@ -43,12 +45,18 @@ namespace ToonKnife.TestClient
             _mainServerController.GoToFightQueue("knife00", KnifeMode.Medium);
         }
 
-        private void MainServerController_FigthCreated(MainServerController mainServerController, FightController fightController)
+        private void MainServerController_FigthCreated(MainServerController mainServerController, FightController fightController, EnemyDef enemyDef)
         {
             fightController.FightEnd += FightController_FightEnd;
             _bot = new FightBot(_client.Login, _isWolf, fightController);
 
+            fightController.KnifeThrow += FightController_KnifeThrow;
             fightController.SendReady();
+        }
+
+        private void FightController_KnifeThrow(Common.KnifeThrowEventArg obj)
+        {
+            Console.WriteLine("FightController_KnifeThrow knifeId=" + obj.KnifeId);
         }
 
         void FightController_FightEnd(int obj)
@@ -57,7 +65,7 @@ namespace ToonKnife.TestClient
 
             if (_gamesCount > 0)
             {
-                
+
                 Timer.AddTimer(GoToFightQueue, DateTime.Now);
             }
             else

@@ -38,7 +38,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FightController.cs" />
+    <Compile Include="MainServerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ClientServerCommon\ClientServerGameLogicCommon\ClientServerGameLogicCommon.csproj">
+      <Project>{82179748-225A-40DE-B7E4-3A5B70AA276C}</Project>
+      <Name>ClientServerGameLogicCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\scs-master net3_5\src\Scs\Scs.csproj">
+      <Project>{0DC81B09-3ABF-4BB3-8C08-4E8EE4432BDC}</Project>
+      <Name>Scs</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ScsService\Common\ScsService.Common.csproj">
+      <Project>{5A2546E5-59C0-4879-9F8D-71E0F927C9DB}</Project>
+      <Name>ScsService.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ScsService\ScsService.Client\ScsService.Client.csproj">
+      <Project>{3FF31737-AA75-4EF3-9E8F-F05C07DDD8BC}</Project>
+      <Name>ScsService.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ToonKnife\ToonKnifeServerClientCommon\ToonKnife.Common.csproj">
+      <Project>{6BC71155-0319-4E67-A72F-48756BAACFF7}</Project>
+      <Name>ToonKnife.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /Y "$(TargetDir)*.*"  "E:\ToonKnife\Assets\plugins\ClientServerCommon\"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

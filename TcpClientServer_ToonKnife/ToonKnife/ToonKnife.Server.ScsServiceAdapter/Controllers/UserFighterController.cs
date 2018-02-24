@@ -56,6 +56,7 @@ namespace ToonKnife.Server.ScsServiceAdapter.Controllers
 
         void Kight_KnifeThrow_Handler(object sender, KnifeThrowEventArgs e)
         {
+            Console.WriteLine("Kight_KnifeThrow_Handler----------send to " + _user.Login);
             _user.SendMsg(new ThrowKnifeMessage(e.input, e.knifeIndex, e.timeThrow, e.timeNextThrow));
         }
 

@@ -9,7 +9,6 @@ namespace ToonKnife.TestServer
     public class TestBotControllerFactory : IControllersFactory
     {
         string _login;
-        UserFightQueue _userFightQueue;
         bool _isWoll;
         ToonKnifeTest _test;
 

@@ -22,9 +22,10 @@ namespace Hik.Communication.Scs.Client.Tcp
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
-                socket.Blocking = false;
-                socket.Connect(endPoint);
+                //socket.Blocking = false;
                 socket.Blocking = true;
+                socket.Connect(endPoint);
+                //socket.Blocking = true;
                 return socket;
             }
             catch (SocketException socketException)

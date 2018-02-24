@@ -39,11 +39,11 @@ namespace ToonKnife.TestClient
                 _listClients.Add(wolf);
             }
 
-            {
-                Console.WriteLine(typeof(TestBotClient).Name + $"Create bot i={i}");
-                BotClient wolf = new BotClient(_serverPort, _serverIp, "TestBot_Rabbit_" + i, false, _fightsPerUser);
-                _listClients.Add(wolf);
-            }
+            //{
+            //    Console.WriteLine(typeof(TestBotClient).Name + $"Create bot i={i}");
+            //    BotClient wolf = new BotClient(_serverPort, _serverIp, "TestBot_Rabbit_" + i, false, _fightsPerUser);
+            //    _listClients.Add(wolf);
+            //}
 
             if (_wolfsCount > 0)
             {

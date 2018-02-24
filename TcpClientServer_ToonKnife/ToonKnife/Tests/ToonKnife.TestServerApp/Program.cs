@@ -9,34 +9,51 @@ namespace ToonKnife.TestServerApp
     {
         static BotTestServer _testServer;
         static TestBotClient _testClients;
-
-
+         
         static void Main(string[] args)
         {
             int serverPort = 5500;
-            int wolfCounut = 10;
+            int wolfCounut = 1;
             string serverIp = "127.0.0.1";
 
             if (args.Length > 0)
             {
-                serverIp = args[0];
-               
+                serverIp = args[0]; 
             }
 
-            Console.WriteLine("Server ip= " + serverIp);
-            Console.WriteLine("Press 1 - server[s], any other - Clietn[s]");
+           
+            Console.WriteLine("Press 1 - server[s] ");
+            Console.WriteLine("Press 2 - one clietn");
+            Console.WriteLine("Press 3 - server and one serverBot");
+            Console.WriteLine("Press any other - Clietn[s]");
             var input = Console.ReadKey(true).Key;
+            Console.Clear();
 
             if (input == ConsoleKey.D1)
             {
                 _testServer = new BotTestServer(serverPort, wolfCounut);
                 Console.Title = "Server[s]";
+                
+            }
+            else if (input == ConsoleKey.D2)
+            {
+                _testClients = new TestBotClient(serverPort, serverIp, wolfCounut, 1);
+                Console.Title = "Client";
+            }
+            else if (input == ConsoleKey.D3)
+            {
+                _testServer = new BotTestServer(serverPort, wolfCounut);
+                _testClients = new TestBotClient(serverPort, serverIp, wolfCounut, 1);
+                Console.Title = "Server[s] and Client[s]";
             }
             else
             {
                 _testClients = new TestBotClient(serverPort, serverIp, wolfCounut, 1);
-                Console.Title = "Clirnts[s]";
+                Console.Title = "Clients[s]";
             }
+
+            Console.WriteLine("Server ip= " + serverIp);
+
 
             Thread loop = new Thread(Loop);
             loop.IsBackground = true;

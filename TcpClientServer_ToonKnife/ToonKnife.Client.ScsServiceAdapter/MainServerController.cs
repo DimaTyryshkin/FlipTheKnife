@@ -1,20 +1,18 @@
 ﻿using Assets.game.model.knife;
+using ClientServerGameLogicCommon;
 using ScsService.Client;
 using ScsService.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System; 
 using ToonKnife.Common.ScsMessages;
 
-namespace ToonKnife.TestClient
+namespace ToonKnife.Client.ScsServiceAdapter
 {
     public class MainServerController
     {
         ScsClient _client;
 
 
-        public event Action<MainServerController, FightController> FigthCreated;
+        public event Action<MainServerController, FightController, EnemyDef> FigthCreated;
 
 
         public MainServerController(ScsClient client)
@@ -36,7 +34,8 @@ namespace ToonKnife.TestClient
         void FightCteated_Reader(ReceivedMsg receivedMsg, FightCteatedMessage msg)
         {
             FightController fightController = new FightController(_client, msg.KnifeIndex);
-            FigthCreated?.Invoke(this, fightController);
+            EnemyDef enemyDef = new EnemyDef(msg.EnemyUserName, msg.EnemyKnifeName, msg.EnemyKnifeMode);
+            FigthCreated?.Invoke(this, fightController, enemyDef);
         }
     }
 }

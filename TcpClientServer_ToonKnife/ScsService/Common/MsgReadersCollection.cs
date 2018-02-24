@@ -7,6 +7,8 @@ namespace ScsService.Common
 {
     public class MsgReadersCollection
     {
+        public event Action<IScsMessage> OnMsg;
+
         Dictionary<Type, Delegate> _msgReaders;
          
         public MsgReadersCollection()
@@ -30,6 +32,9 @@ namespace ScsService.Common
         public bool CallReader(ReceivedMsg msg)
         {
             Delegate reader;
+
+            if (OnMsg != null)
+                OnMsg.Invoke(msg.Msg);
 
             if (_msgReaders.TryGetValue(msg.Msg.GetType(), out reader))
             {
