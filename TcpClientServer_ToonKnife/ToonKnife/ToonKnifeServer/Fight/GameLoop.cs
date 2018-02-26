@@ -21,7 +21,7 @@ namespace ToonKnife.Server.Fight
         //---prop
         public bool CanThrow => DateTime.Now >= _timeNextThrow &&
              DateTime.Now <= TimeEndFight &&
-            _game.knife.state == Knife.State.Freeze ;
+            _game.knife.state == KnifeState.Freeze ;
 
         public int ScoreInFight => _scoreInFight;
 
@@ -84,7 +84,7 @@ namespace ToonKnife.Server.Fight
             }
         }
 
-        void Knife_throwFail(float deltaAngle)
+        void Knife_throwFail(float rotationSpeed, float deltaAngle)
         {
             StopUpdateLoop();
 

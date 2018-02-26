@@ -5,6 +5,17 @@ using OEPFramework;
 
 namespace Assets.game.logic.playground.common
 {
+    public struct FailInfo
+    {
+        public float rotationSpeed;
+        public float deltaAngles;
+
+        public override string ToString()
+        {
+            return string.Format("[rotationSpeed={0}, deltAngles={1}]", rotationSpeed, deltaAngles);
+        }
+    }
+
     public struct ThrowInfo
     {
         public int flips;

@@ -40,10 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="adapters\GameAdapter.cs" />
+    <Compile Include="behaviours\LocalGameBehaviourBase.cs" />
+    <Compile Include="behaviours\RestartOnFailBehaviour.cs" />
     <Compile Include="EnemyDef.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="IGame.cs" />
+    <Compile Include="ILocalGameBehaviour.cs" />
+    <Compile Include="ILocalGame.cs" />
     <Compile Include="Knife.cs" />
     <Compile Include="KnifePhysicsModel\KnifePhysicsModel.cs" />
+    <Compile Include="KnifeState.cs" />
     <Compile Include="knife\KnifeDef.cs" />
     <Compile Include="knife\KnifeMode.cs" />
     <Compile Include="knife\KnifeRarity.cs" />

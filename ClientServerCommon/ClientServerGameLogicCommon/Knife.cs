@@ -3,7 +3,7 @@ using Assets.game.model.knife;
 
 namespace Assets.game.logic.playground.common
 {
-    public delegate void KnifeThrowFail(float deltaAngle);
+    public delegate void KnifeThrowFail(float rotationSpeed, float deltaAngle);
     public delegate void KnifeThrowSuccess(int flips, bool isPerfect, SkillType skill);
 
     [Flags]
@@ -19,10 +19,12 @@ namespace Assets.game.logic.playground.common
     {
         public const float PIXELS_TO_UNITS = 0.01f;
 
+        private float m_position;
+
         private float m_rotation;
         private float m_rotationAfterThrow;
         private float m_rotationSpeed;
-        private State m_state;
+        private KnifeState m_state;
         private KnifeDef m_def; 
 
 
@@ -37,16 +39,7 @@ namespace Assets.game.logic.playground.common
             get { return knifeTrajectory; }
         }
 
-
-        public enum State
-        {
-            Freeze,
-            Flying,
-            Falling,
-            Free,
-        }
-
-        public State state
+        public KnifeState state
         {
             get { return m_state; }
         }
@@ -58,6 +51,11 @@ namespace Assets.game.logic.playground.common
             {
                 m_def = value;
             }
+        }
+
+        public float position
+        {
+            get { return m_position; }
         }
 
         public float rotation
@@ -74,7 +72,7 @@ namespace Assets.game.logic.playground.common
         }
 
 
-        public event Action<State> stateChanged;
+        public event Action<KnifeState> stateChanged;
           
         public event Action onReset;
         public event Action throwing;
@@ -87,7 +85,7 @@ namespace Assets.game.logic.playground.common
         public Knife()
         {
             m_def = new KnifeDef();
-            m_state = State.Freeze; 
+            m_state = KnifeState.Freeze; 
         }
 
         public void Update(float dt)
@@ -96,13 +94,15 @@ namespace Assets.game.logic.playground.common
 
             m_timeAfterThrow += dt;
 
-            if ((state == State.Flying || state == State.Falling))
+            if ((state == KnifeState.Flying || state == KnifeState.Falling))
             {
                 var frame = knifeTrajectory.InterpolateFrame(m_timeAfterThrow);
 
+                m_position = frame.senterOfMassY;
+
                 UpdateRotation(frame.angle);
 
-                if (state == State.Flying)
+                if (state == KnifeState.Flying)
                 {
                     if (frame.speed <= 0)
                     {
@@ -136,7 +136,9 @@ namespace Assets.game.logic.playground.common
             m_rotation = 0f;
             m_rotationSpeed = 0f;
 
-            SetState(State.Freeze);
+            m_position = m_def.size / 2f; // VladV: как-то можно получить начальные координаты ножа?
+
+            SetState(KnifeState.Freeze);
 
             if (onReset != null)
                 onReset();
@@ -144,13 +146,13 @@ namespace Assets.game.logic.playground.common
 
         public void Throw(float force, float deltaX)
         {
-            if (state != State.Freeze)
+            if (state != KnifeState.Freeze)
                 return;
              
             knifePhysics = new KnifePhysicsModel();
             knifeTrajectory = knifePhysics.Throw(def, force, m_rotation);
 
-            SetState(State.Flying);
+            SetState(KnifeState.Flying);
 
             force *= PIXELS_TO_UNITS;
 
@@ -168,7 +170,7 @@ namespace Assets.game.logic.playground.common
 
         private void Collide()
         {
-            if (m_state != State.Falling)
+            if (m_state != KnifeState.Falling)
                 return;
              
             m_simulationSpeed = 1f;
@@ -231,31 +233,32 @@ namespace Assets.game.logic.playground.common
             {
                 Free();
 
-                //float deltaLeft = Math.Abs(minAngleLeft - def.successDeflectionLeft);
-                //float deltaRight = Math.Abs(minAngleRight - def.successDeflectionRight);
-                //float delta = Math.Min(deltaLeft, deltaRight);
-
                 if (throwFail != null)
                 {
+                    float deltaLeft = Math.Abs(minAngleLeft - def.successDeflectionLeft);
+                    float deltaRight = Math.Abs(minAngleRight - def.successDeflectionRight);
+                    float deltaAngle = Math.Min(deltaLeft, deltaRight);
+
                     float rotationSpeed = knifeTrajectory.InterpolateFrame(m_timeAfterThrow).rotationSpeed;
-                    throwFail(rotationSpeed);
+
+                    throwFail(rotationSpeed, deltaAngle);
                 }
             }
         }
 
         private void Fall()
         {
-            SetState(State.Falling);
+            SetState(KnifeState.Falling);
         }
 
         private void Free()
         {
-            SetState(State.Free);
+            SetState(KnifeState.Free);
         }
 
         private void Freeze(bool isPerfect)
         {
-            SetState(State.Freeze);
+            SetState(KnifeState.Freeze);
 
             m_rotationSpeed = 0f;
         }
@@ -279,7 +282,7 @@ namespace Assets.game.logic.playground.common
             }
         }
 
-        private void SetState(State state)
+        private void SetState(KnifeState state)
         {
             if (m_state == state)
                 return;
