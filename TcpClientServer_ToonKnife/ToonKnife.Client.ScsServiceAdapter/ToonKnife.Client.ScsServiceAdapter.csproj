@@ -66,6 +66,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(TargetDir)*.*"  "E:\ToonKnife\Assets\plugins\ClientServerCommon\"</PostBuildEvent>
+    <PostBuildEvent>if EXIST "E:\ToonKnife\Assets\plugins\ClientServerCommon\" (
+xcopy /Y "$(TargetDir)*.*"  "E:\ToonKnife\Assets\plugins\ClientServerCommon\"
+)
+if EXIST "C:\ToonKnife\Assets\plugins\ClientServerCommon\" (
+xcopy /Y "$(TargetDir)*.*"  "C:\ToonKnife\Assets\plugins\ClientServerCommon\"
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>
