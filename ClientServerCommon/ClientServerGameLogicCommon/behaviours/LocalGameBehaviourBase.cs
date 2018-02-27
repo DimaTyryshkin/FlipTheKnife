@@ -1,4 +1,6 @@
 ﻿
+using Assets.game.model.knife;
+
 namespace Assets.game.logic.playground.common.behaviours
 {
     /// <summary>
@@ -15,6 +17,21 @@ namespace Assets.game.logic.playground.common.behaviours
         public virtual void PostFail(ILocalGame game)
         {
 
+        }
+
+        public virtual bool PreChangeKnifeMode(ILocalGame game, KnifeMode knifeMode)
+        {
+            return true;
+        }
+
+        public virtual bool PreRestart(ILocalGame game)
+        {
+            return true;
+        }
+
+        public virtual bool PreThrow(ILocalGame game, float force)
+        {
+            return true;
         }
 
         public virtual bool PreUpdate(ILocalGame game, float deltaTime)

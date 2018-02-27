@@ -43,6 +43,8 @@ namespace Assets.game.logic.playground.common
         private readonly RawNode m_settings;
         private readonly RawNode m_knivesSettings;
 
+        private float m_time;
+
         private Random m_rnd;
         private int m_score;
         private int m_perfectFlipCounter;
@@ -52,6 +54,11 @@ namespace Assets.game.logic.playground.common
         private KnifeMode m_knifeMode;
 
         private Knife m_knife;
+
+        public float time
+        {
+            get { return m_time; }
+        }
 
         public Knife knife
         {
@@ -115,6 +122,8 @@ namespace Assets.game.logic.playground.common
 
         public void Update(float dt)
         {
+            m_time += dt;
+
             m_knife.Update(dt);
         }
 

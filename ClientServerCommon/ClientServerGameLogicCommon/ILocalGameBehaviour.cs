@@ -1,4 +1,6 @@
 ﻿
+using Assets.game.model.knife;
+
 namespace Assets.game.logic.playground.common
 {
     /// <summary>
@@ -22,5 +24,28 @@ namespace Assets.game.logic.playground.common
         /// </summary>
         /// <param name="game">Игра, поведение которой дополняется.</param>
         void PostFail(ILocalGame game);
+
+        /// <summary>
+        /// Вызывается перед броском ножа.
+        /// </summary>
+        /// <param name="game">Игра, поведение которой дополняется.</param>
+        /// <param name="force">Сила, с которой будет брошен нож.</param>
+        /// <returns>false если необходимо отменить бросок, иначе true</returns>
+        bool PreThrow(ILocalGame game, float force);
+
+        /// <summary>
+        /// Вызывается перед сменой режима ножа.
+        /// </summary>
+        /// <param name="game">Игра, поведение которой дополняется.</param>
+        /// <param name="knifeMode">Новый режим ножа.</param>
+        /// <returns>false если необходимо отменить смену скорости, иначе true</returns>
+        bool PreChangeKnifeMode(ILocalGame game, KnifeMode knifeMode);
+
+        /// <summary>
+        /// Вызывается перед сбросом состояния игры.
+        /// </summary>
+        /// <param name="game">Игра, поведение которой дополняется.</param>
+        /// <returns>false если необходимо отменить сброс состояния, иначе true</returns>
+        bool PreRestart(ILocalGame game);
     }
 }

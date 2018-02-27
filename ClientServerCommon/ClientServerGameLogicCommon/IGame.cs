@@ -23,6 +23,11 @@ namespace Assets.game.logic.playground.common
         int score { get; }
 
         /// <summary>
+        /// Количество секунд с начала игры.
+        /// </summary>
+        float time { get; }
+
+        /// <summary>
         /// Текущий режим ножа.
         /// </summary>
         KnifeMode knifeMode { get; }

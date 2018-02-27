@@ -41,7 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="adapters\GameAdapter.cs" />
+    <Compile Include="behaviours\CallbacksBehaviour.cs" />
     <Compile Include="behaviours\LocalGameBehaviourBase.cs" />
+    <Compile Include="behaviours\replays\ReplayCommandCode.cs" />
+    <Compile Include="behaviours\replays\ReplayPlayerBehaviour.cs" />
+    <Compile Include="behaviours\replays\ReplayRecorderBehaviour.cs" />
+    <Compile Include="behaviours\replays\ReplayStream.cs" />
     <Compile Include="behaviours\RestartOnFailBehaviour.cs" />
     <Compile Include="EnemyDef.cs" />
     <Compile Include="Game.cs" />
@@ -61,6 +66,7 @@
     <Compile Include="price\PriceType.cs" />
     <Compile Include="price\PriceUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="replay\ReplayDef.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataAsses\DataAsses.csproj">

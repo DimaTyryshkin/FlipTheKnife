@@ -19,6 +19,7 @@ namespace Assets.game.logic.playground.common.adapters
         private readonly string m_knife;
         private readonly string m_level;
 
+        public float time { get { return m_game.time; } }
         public float knifePosition { get { return m_game.knife.position; } }
         public float knifeRotation { get { return m_game.knife.rotation; } }
         public string knife { get { return m_game.knifeDef.key; } }
@@ -48,7 +49,7 @@ namespace Assets.game.logic.playground.common.adapters
             m_game.knife.onReset += OnKnifeReset;
             m_game.knife.throwing += OnKnifeThrowing;
             m_game.onThrowSuccess += OnKnifeThrowSuccess;
-            m_game.knife.throwFail += OnKnifeThrowFail;
+            m_game.knife.throwFail += OnKnifeThrowFail;            
         }
 
         public void Dispose()
@@ -79,22 +80,40 @@ namespace Assets.game.logic.playground.common.adapters
 
         public void SetKnifeMode(KnifeMode knifeMode)
         {
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                if (!m_behaviours[i].PreChangeKnifeMode(this, knifeMode))
+                    return;
+            }
+
             m_game.SetKnifeMode(m_knife, knifeMode);
         }
 
         public void Restart()
         {
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                if (!m_behaviours[i].PreRestart(this))
+                    return;
+            }
+
             m_game.Restart();
         }
 
         public void Throw(float force)
         {
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                if (!m_behaviours[i].PreThrow(this, force))
+                    return;
+            }
+
             m_game.Throw(force);
         }
 
         private void OnKnifeStateChanged(KnifeState obj)
         {
-            if (stateChanged != null) stateChanged(knifeState);
+            if (stateChanged != null) stateChanged(obj);
         }
 
         private void OnKnifeModeChanged(KnifeMode obj)
