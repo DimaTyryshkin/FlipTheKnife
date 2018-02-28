@@ -14,10 +14,29 @@ namespace Assets.game.logic.playground.common.behaviours
     /// </remarks>
     public abstract class LocalGameBehaviourBase : ILocalGameBehaviour
     {
-        public virtual void PostFail(ILocalGame game)
-        {
+        public virtual void PostKnifeFlip(ILocalGame game)
+        { }
 
-        }
+        public virtual void PostKnifeModeChnaged(ILocalGame game, KnifeMode knifeMode)
+        { }
+
+        public virtual void PostKnifeRestart(ILocalGame game)
+        { }
+
+        public virtual void PostKnifeStateChnaged(ILocalGame game, KnifeState knifeState)
+        { }
+
+        public virtual void PostKnifeThrowFail(ILocalGame game, FailInfo failInfo)
+        { }
+
+        public virtual void PostKnifeThrowing(ILocalGame game)
+        { }
+
+        public virtual void PostKnifeThrowSuccess(ILocalGame game, ThrowInfo info)
+        { }
+
+        public virtual void PostUpdate(ILocalGame game, float deltaTime)
+        { }
 
         public virtual bool PreChangeKnifeMode(ILocalGame game, KnifeMode knifeMode)
         {

@@ -20,9 +20,9 @@ namespace Assets.game.logic.playground.common.behaviours
             m_restartTimeout = restartTimeout;
         }
 
-        public override void PostFail(ILocalGame game)
+        public override void PostKnifeThrowFail(ILocalGame game, FailInfo failInfo)
         {
-            base.PostFail(game);
+            base.PostKnifeThrowFail(game, failInfo);
 
             m_timeLeftToRestart = m_restartTimeout;
         }

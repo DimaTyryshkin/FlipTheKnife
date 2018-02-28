@@ -76,6 +76,11 @@ namespace Assets.game.logic.playground.common.adapters
             }
 
             m_game.Update(deltaTime);
+
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                m_behaviours[i].PostUpdate(this, deltaTime);
+            }
         }
 
         public void SetKnifeMode(KnifeMode knifeMode)
@@ -113,47 +118,78 @@ namespace Assets.game.logic.playground.common.adapters
 
         private void OnKnifeStateChanged(KnifeState obj)
         {
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                m_behaviours[i].PostKnifeStateChnaged(this, obj);
+            }
+
             if (stateChanged != null) stateChanged(obj);
         }
 
         private void OnKnifeModeChanged(KnifeMode obj)
         {
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                m_behaviours[i].PostKnifeModeChnaged(this, obj);
+            }
+
             if (modeChanged != null) modeChanged(obj);
         }
 
         private void OnKnifeThrowing()
         {
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                m_behaviours[i].PostKnifeThrowing(this);
+            }
+
             if (knifeThrowing != null) knifeThrowing();
         }
 
         private void OnKnifeReset()
         {
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                m_behaviours[i].PostKnifeRestart(this);
+            }
+
             if (knifeReset != null) knifeReset();
         }
 
         private void OnKnifeFlip()
         {
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                m_behaviours[i].PostKnifeFlip(this);
+            }
+
             if (flip != null) flip();
         }
 
         private void OnKnifeThrowFail(float rotationSpeed, float deltaAngle)
         {
+            FailInfo failInfo;
+            failInfo.rotationSpeed = rotationSpeed;
+            failInfo.deltaAngles = deltaAngle;
+
             for (int i = 0; i < m_behaviours.Length; i++)
             {
-                m_behaviours[i].PostFail(this);
+                m_behaviours[i].PostKnifeThrowFail(this, failInfo);
             }
 
             if (knifeThrowFail != null)
             {
-                FailInfo failInfo;
-                failInfo.rotationSpeed = rotationSpeed;
-                failInfo.deltaAngles = deltaAngle;
                 knifeThrowFail(failInfo);
             }
         }
 
         private void OnKnifeThrowSuccess(ThrowInfo info)
         {
+            for (int i = 0; i < m_behaviours.Length; i++)
+            {
+                m_behaviours[i].PostKnifeThrowSuccess(this, info);
+            }
+
             if (knifeThrowSuccess != null) knifeThrowSuccess(info);
         }
     }

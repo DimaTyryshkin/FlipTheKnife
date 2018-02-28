@@ -1,5 +1,4 @@
-﻿
-using Assets.game.model.knife;
+﻿using Assets.game.model.knife;
 
 namespace Assets.game.logic.playground.common
 {
@@ -23,7 +22,7 @@ namespace Assets.game.logic.playground.common
         /// Вызывается после неудачного приземления ножа.
         /// </summary>
         /// <param name="game">Игра, поведение которой дополняется.</param>
-        void PostFail(ILocalGame game);
+        void PostKnifeThrowFail(ILocalGame game, FailInfo failInfo);
 
         /// <summary>
         /// Вызывается перед броском ножа.
@@ -47,5 +46,13 @@ namespace Assets.game.logic.playground.common
         /// <param name="game">Игра, поведение которой дополняется.</param>
         /// <returns>false если необходимо отменить сброс состояния, иначе true</returns>
         bool PreRestart(ILocalGame game);
+
+        void PostKnifeStateChnaged(ILocalGame game, KnifeState knifeState);
+        void PostKnifeModeChnaged(ILocalGame game, KnifeMode knifeMode);
+        void PostKnifeThrowing(ILocalGame game);
+        void PostKnifeRestart(ILocalGame game);
+        void PostKnifeFlip(ILocalGame game);
+        void PostKnifeThrowSuccess(ILocalGame game, ThrowInfo info);
+        void PostUpdate(ILocalGame game, float deltaTime);
     }
 }
