@@ -1,5 +1,4 @@
-﻿
-using Assets.game.model.knife;
+﻿using Assets.game.model.knife;
 
 namespace Assets.game.logic.playground.common.behaviours.replays
 {
@@ -9,6 +8,12 @@ namespace Assets.game.logic.playground.common.behaviours.replays
     public class ReplayPlayerBehaviour : LocalGameBehaviourBase
     {
         private readonly IReplayReader m_reader;
+
+        public GameOutOfSync gameOutOfSync { get; set; }
+        public InvalidStream invalidStream { get; set; }
+
+        public delegate void GameOutOfSync(float deltaRotation);
+        public delegate void InvalidStream(string message);
 
         public ReplayPlayerBehaviour(IReplayReader replayReader)
         {
@@ -39,6 +44,10 @@ namespace Assets.game.logic.playground.common.behaviours.replays
             if (code == ReplayCommandCode.Throw && game.knifeState != KnifeState.Freeze)
                 return false;
 
+            // бросать нож можно только когда он на земле
+            if (code == ReplayCommandCode.ThrowDebug && game.knifeState != KnifeState.Freeze)
+                return false;
+
             // нельзя перезапускать игру во время полёта ножа
             if (code == ReplayCommandCode.Restart && (game.knifeState == KnifeState.Falling || game.knifeState == KnifeState.Flying))
                 return false;
@@ -54,34 +63,98 @@ namespace Assets.game.logic.playground.common.behaviours.replays
         {
             float time;
             ReplayCommandCode code;
-            if (false == m_reader.ReadNext(out time, out code))
+            if (!m_reader.ReadNext(out time, out code))
+            {
+                RaiseInvalidStream("Failed to read command");
                 return;
+            }
 
             switch (code)
             {
                 case ReplayCommandCode.Throw:
-                    float force;
-                    if (m_reader.ReadThrow(out force))
-                    {
-                        game.Throw(force);
-                    }
+                    HandleThrow(game);
+                    break;
+
+                case ReplayCommandCode.ThrowDebug:
+                    HandleThrowDebug(game);
                     break;
 
                 case ReplayCommandCode.Restart:
-                    if (m_reader.ReadRestart())
-                    {
-                        game.Restart();
-                    }
+                    HandleRestart(game);
                     break;
 
                 case ReplayCommandCode.ChangeMode:
-                    KnifeMode knifeMode;
-                    if (m_reader.ReadChangeMode(out knifeMode))
-                    {
-                        game.SetKnifeMode(knifeMode);
-                    }
+                    HandleChangeMode(game);
+                    break;
+
+                default:
+                    RaiseInvalidStream("Invalid command code");
                     break;
             }
+        }
+
+        private void HandleThrow(ILocalGame game)
+        {
+            float force;
+            if (!m_reader.ReadThrow(out force))
+            {
+                RaiseInvalidStream("Failed to read throw");
+                return;
+            }
+
+            game.Throw(force);
+        }
+
+        private void HandleThrowDebug(ILocalGame game)
+        {
+            float force2, startRotation;
+            if (!m_reader.ReadThrowDebug(out force2, out startRotation))
+            {
+                RaiseInvalidStream("Failed to read throw debug");
+                return;
+            }
+
+            if (game.knifeRotation != startRotation)
+            {
+                RaiseGameOutOfSync(game.knifeRotation - startRotation);
+            }
+
+            game.Throw(force2);
+        }
+
+        private void HandleRestart(ILocalGame game)
+        {
+            if (!m_reader.ReadRestart())
+            {
+                RaiseInvalidStream("Failed to read restart");
+                return;
+            }
+
+            game.Restart();
+        }
+
+        private void HandleChangeMode(ILocalGame game)
+        {
+            KnifeMode knifeMode;
+            if (!m_reader.ReadChangeMode(out knifeMode))
+            {
+                RaiseInvalidStream("Failed to read change speed");
+                return;
+            }
+
+            game.SetKnifeMode(knifeMode);
+        }
+
+        private void RaiseInvalidStream(string message)
+        {
+            if (invalidStream != null)
+                invalidStream(message);
+        }
+
+        private void RaiseGameOutOfSync(float deltaRotation)
+        {
+            if (gameOutOfSync != null)
+                gameOutOfSync(deltaRotation);
         }
     }
 }

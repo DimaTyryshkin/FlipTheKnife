@@ -10,6 +10,7 @@ namespace Assets.game.logic.playground.common.behaviours.replays
         bool ReadNext(out float time, out ReplayCommandCode code);
 
         bool ReadThrow(out float force);
+        bool ReadThrowDebug(out float force, out float startRotation);
         bool ReadRestart();
         bool ReadChangeMode(out KnifeMode knifeMode);
     }
@@ -17,6 +18,7 @@ namespace Assets.game.logic.playground.common.behaviours.replays
     public interface IReplayWriter
     {
         void WriteThrow(float time, float force);
+        void WriteThrowDebug(float time, float force, float startRotation);
         void WriteRestart(float time);
         void WriteChangeMode(float time, KnifeMode knifeMode);
     }
@@ -80,6 +82,20 @@ namespace Assets.game.logic.playground.common.behaviours.replays
             return true;
         }
 
+        public bool ReadThrowDebug(out float force, out float startRotation)
+        {
+            if (m_position + 4  + 4> m_data.Length)
+            {
+                force = 0f;
+                startRotation = 0f;
+                return false;
+            }
+
+            ReadSingle(m_data, ref m_position, out force);
+            ReadSingle(m_data, ref m_position, out startRotation);
+            return true;
+        }
+
         public bool ReadRestart()
         {
             if (m_position > m_data.Length)
@@ -140,6 +156,16 @@ namespace Assets.game.logic.playground.common.behaviours.replays
             WriteSingle(m_data, ref m_position, time);
             m_data[m_position++] = (byte)ReplayCommandCode.Throw;
             WriteSingle(m_data, ref m_position, force);
+        }
+
+        public void WriteThrowDebug(float time, float force, float startRotation)
+        {
+            EnsureBufferSize(m_position + 4 + 1 + 4 + 4);
+
+            WriteSingle(m_data, ref m_position, time);
+            m_data[m_position++] = (byte)ReplayCommandCode.Throw;
+            WriteSingle(m_data, ref m_position, force);
+            WriteSingle(m_data, ref m_position, startRotation);
         }
 
         public void WriteRestart(float time)

@@ -7,5 +7,6 @@ namespace Assets.game.logic.playground.common.behaviours.replays
         Throw = 1,
         Restart = 2,
         ChangeMode = 3,
+        ThrowDebug = 4,
     }
 }
